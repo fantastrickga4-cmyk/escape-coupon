@@ -1,0 +1,95 @@
+// 방탈출 매장 쿠폰 발행기 데이터 모델
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// 매장(호점) — 1호점/2호점/3호점
+model Store {
+  id      Int      @id // 1, 2, 3
+  name    String // "1호점"
+  coupons Coupon[]
+}
+
+// 테마(방) — 방탈출 룸. 기능5(다른 테마 유도)의 기반. 브랜드 공통 목록.
+model Theme {
+  id        Int      @id @default(autoincrement())
+  name      String   @unique
+  createdAt DateTime @default(now())
+}
+
+// 캠페인 — 같은 혜택의 쿠폰 묶음
+model Campaign {
+  id      String @id @default(cuid())
+  name    String
+  benefit String // 혜택 내용 (예: "다른 테마 20% 할인")
+  kind    String @default("normal") // normal | review | referral
+
+  expiresAt DateTime? // 만료일 (없으면 무기한)
+
+  // 기능7: 시간·요일 한정
+  validDays     String? // 사용가능 요일 CSV (0=일 ~ 6=토), null=무관
+  validFromHour Int? // 사용가능 시작시(0-23)
+  validToHour   Int? // 사용가능 종료시(0-23, 이 시각 전까지)
+
+  // 기능8: 단체(최소 인원)
+  minPeople Int @default(1)
+
+  // 기능2: 리뷰 보상 — 리뷰 작성 페이지 링크
+  reviewUrl String?
+
+  // 기능1: 추천 — 추천인 보상 혜택 텍스트
+  referrerReward String?
+
+  createdAt DateTime   @default(now())
+  coupons   Coupon[]
+  referrals Referral[]
+}
+
+// 쿠폰 — 1회용. id 값이 QR/링크에 담기는 고유 토큰
+model Coupon {
+  id         String   @id // 추측 불가능한 랜덤 토큰
+  campaignId String
+  campaign   Campaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  status     String   @default("issued") // issued | redeemed
+  expiresAt  DateTime?
+  sentTo     String? // 문자 발송 대상 번호 (배포 추적용)
+
+  benefitOverride String? // 개별 혜택 덮어쓰기 (예: 추천인 보상)
+  excludeTheme    String? // 기능5: 이 테마에선 사용 불가(이미 플레이한 테마)
+
+  // 사용 처리 기록
+  redeemedAt     DateTime?
+  storeId        Int? // 사용된 호점
+  store          Store?    @relation(fields: [storeId], references: [id])
+  redeemedTheme  String? // 어떤 테마에 사용했는지
+  redeemedPeople Int? // 사용 시 인원수
+
+  createdAt DateTime @default(now())
+
+  @@index([campaignId])
+  @@index([status])
+}
+
+// 기능1: 추천 — 추천인이 만든 추천 링크
+model Referral {
+  id            String   @id // 추천 토큰 (/r/[id])
+  campaignId    String
+  campaign      Campaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  referrerPhone String // 추천인 번호 (보상 쿠폰 받을 사람)
+  refereeCount  Int      @default(0) // 이 링크로 가입한 친구 수
+  createdAt     DateTime @default(now())
+}
+
+// 기능10: 활동 로그
+model Log {
+  id        Int      @id @default(autoincrement())
+  type      String // redeem | cancel
+  detail    String
+  storeId   Int?
+  createdAt DateTime @default(now())
+}

@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>방탈출 쿠폰 — 디자인 샘플 10종</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Press+Start+2P&family=Pretendard&family=Gowun+Batang:wght@700&display=swap" rel="stylesheet">
+<style>
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:'Pretendard','Segoe UI','Malgun Gothic',sans-serif;background:#eef1f6;color:#1e293b;padding-bottom:60px;}
+  header{background:#0f172a;color:#fff;padding:44px 24px;text-align:center;}
+  header h1{font-size:1.9rem;font-weight:800;}
+  header p{opacity:.8;margin-top:8px;font-size:.92rem;}
+  .grid{max-width:1180px;margin:28px auto;padding:0 20px;display:grid;grid-template-columns:repeat(2,1fr);gap:22px;}
+  @media(max-width:820px){.grid{grid-template-columns:1fr;}}
+
+  .panel{background:#fff;border:1px solid #e2e8f0;border-radius:18px;overflow:hidden;box-shadow:0 4px 16px rgba(15,23,42,.06);}
+  .panel-head{padding:16px 18px 12px;border-bottom:1px solid #f1f5f9;}
+  .panel-head .row{display:flex;align-items:center;gap:10px;}
+  .pnum{width:30px;height:30px;border-radius:8px;background:#0f172a;color:#fff;font-weight:800;font-size:.9rem;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+  .pname{font-size:1.08rem;font-weight:800;}
+  .ptag{margin-left:auto;font-size:.7rem;font-weight:700;background:#eef2ff;color:#4f46e5;padding:4px 10px;border-radius:20px;}
+  .pdesc{font-size:.8rem;color:#64748b;margin-top:8px;}
+  .swatches{display:flex;gap:6px;margin-top:10px;}
+  .sw{width:22px;height:22px;border-radius:6px;border:1px solid rgba(0,0,0,.08);}
+
+  .preview{padding:20px 18px;display:flex;flex-direction:column;gap:14px;align-items:stretch;}
+  /* 공용 미니 쿠폰 카드 */
+  .card{border-radius:16px;overflow:hidden;}
+  .card .top{padding:16px;text-align:center;}
+  .card .top .sub{font-size:.7rem;opacity:.85;}
+  .card .top .ben{font-size:1.15rem;font-weight:800;margin-top:3px;line-height:1.3;}
+  .card .body{padding:16px;display:flex;flex-direction:column;align-items:center;gap:10px;}
+  .qr{width:74px;height:74px;border-radius:8px;background:repeating-conic-gradient(#111 0 25%,#fff 0 50%) 0 0/10px 10px;border:4px solid #fff;box-shadow:0 0 0 1px rgba(0,0,0,.1);}
+  .btns{display:flex;gap:8px;flex-wrap:wrap;}
+  .btn{border:none;cursor:pointer;font-weight:700;font-size:.82rem;padding:10px 16px;border-radius:10px;font-family:inherit;}
+  .btn-sm{padding:8px 12px;font-size:.75rem;}
+
+  /* ===== 1. 미스터리 다크 ===== */
+  .d1 .card{background:#13151f;color:#e7e7ef;border:1px solid #2a2d3d;}
+  .d1 .top{background:linear-gradient(135deg,#3b2b6b,#6d28d9);}
+  .d1 .qr{border-color:#13151f;}
+  .d1 .btn-primary{background:#7c3aed;color:#fff;box-shadow:0 0 18px rgba(124,58,237,.5);}
+  .d1 .btn-ghost{background:transparent;color:#a78bfa;border:1px solid #5b3f9e;}
+
+  /* ===== 2. 모던 미니멀 ===== */
+  .d2 .card{background:#fff;border:1px solid #e5e7eb;}
+  .d2 .top{background:#111827;color:#fff;}
+  .d2 .btn-primary{background:#111827;color:#fff;}
+  .d2 .btn-ghost{background:#f3f4f6;color:#111827;}
+
+  /* ===== 3. 네온 사이버 ===== */
+  .d3 .card{background:#06080d;color:#d7ffe9;border:1px solid #143;}
+  .d3 .top{background:radial-gradient(circle at 30% 20%,#0f2,transparent 60%),#06080d;}
+  .d3 .top .ben{text-shadow:0 0 10px #0f9;color:#7CFFB2;}
+  .d3 .qr{border-color:#06080d;}
+  .d3 .btn-primary{background:#00ff95;color:#022;box-shadow:0 0 16px rgba(0,255,149,.6);}
+  .d3 .btn-ghost{background:transparent;color:#ff3ea5;border:1px solid #ff3ea5;box-shadow:0 0 12px rgba(255,62,165,.4);}
+
+  /* ===== 4. 빈티지 추리 ===== */
+  .d4 .card{background:#f3ead3;color:#3a2e1f;border:1px solid #cdbb93;}
+  .d4 .top{background:#5a4a32;color:#f3ead3;}
+  .d4 .top .ben,.d4 .pname2{font-family:'Playfair Display','Gowun Batang',serif;}
+  .d4 .btn-primary{background:#5a4a32;color:#f3ead3;font-family:'Gowun Batang',serif;}
+  .d4 .btn-ghost{background:transparent;color:#5a4a32;border:1px solid #8a7350;}
+
+  /* ===== 5. 플레이풀 팝 ===== */
+  .d5 .card{background:#fff;border:3px solid #111;box-shadow:6px 6px 0 #111;}
+  .d5 .top{background:#ffd23f;color:#111;}
+  .d5 .qr{border-color:#fff;}
+  .d5 .btn-primary{background:#ff5d8f;color:#fff;border:2px solid #111;box-shadow:3px 3px 0 #111;}
+  .d5 .btn-ghost{background:#4ad7d4;color:#111;border:2px solid #111;box-shadow:3px 3px 0 #111;}
+
+  /* ===== 6. 럭셔리 골드 ===== */
+  .d6 .card{background:#10100c;color:#ece3c8;border:1px solid #b9962e;}
+  .d6 .top{background:linear-gradient(135deg,#1a1813,#2c261680);border-bottom:1px solid #b9962e;}
+  .d6 .top .ben{background:linear-gradient(90deg,#f7e08a,#c79a2e);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;}
+  .d6 .qr{border-color:#10100c;}
+  .d6 .btn-primary{background:linear-gradient(90deg,#e7c65b,#b8902c);color:#221c0a;}
+  .d6 .btn-ghost{background:transparent;color:#e7c65b;border:1px solid #b8902c;}
+
+  /* ===== 7. 글래스모피즘 ===== */
+  .d7-wrap{background:linear-gradient(135deg,#6d28d9,#ec4899 55%,#f59e0b);padding:18px;border-radius:16px;}
+  .d7 .card{background:rgba(255,255,255,.16);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.35);color:#fff;}
+  .d7 .top .ben{text-shadow:0 1px 8px rgba(0,0,0,.2);}
+  .d7 .qr{border-color:rgba(255,255,255,.7);}
+  .d7 .btn-primary{background:rgba(255,255,255,.92);color:#7c3aed;}
+  .d7 .btn-ghost{background:rgba(255,255,255,.18);color:#fff;border:1px solid rgba(255,255,255,.5);}
+
+  /* ===== 8. 레트로 아케이드 ===== */
+  .d8 .card{background:#1a1030;color:#fdf6e3;border:2px solid #ff5277;}
+  .d8 .top{background:#2d1b4e;}
+  .d8 .top .sub,.d8 .top .ben,.d8 .btn{font-family:'Press Start 2P',monospace;}
+  .d8 .top .ben{font-size:.78rem;line-height:1.6;color:#ffe66d;}
+  .d8 .qr{border-color:#1a1030;}
+  .d8 .btn{font-size:.55rem;padding:11px 12px;}
+  .d8 .btn-primary{background:#ff5277;color:#fff;}
+  .d8 .btn-ghost{background:#3ddc97;color:#102;}
+
+  /* ===== 9. 호러 블러드 ===== */
+  .d9 .card{background:#0a0506;color:#e8d6d6;border:1px solid #5a1a1a;}
+  .d9 .top{background:radial-gradient(circle at 50% 0%,#7a0d0d,#250607);}
+  .d9 .top .ben{font-family:'Gowun Batang',serif;color:#ff5a5a;text-shadow:0 0 12px rgba(200,0,0,.6);}
+  .d9 .qr{border-color:#0a0506;}
+  .d9 .btn-primary{background:#a01414;color:#fff;box-shadow:0 0 14px rgba(200,0,0,.4);}
+  .d9 .btn-ghost{background:transparent;color:#ff6b6b;border:1px solid #7a1f1f;}
+
+  /* ===== 10. 클린 카드 (토스풍) ===== */
+  .d10 .card{background:#fff;border:1px solid #eef0f4;box-shadow:0 8px 24px rgba(49,130,246,.10);}
+  .d10 .top{background:#f1f6ff;color:#1b64da;}
+  .d10 .btn-primary{background:#3182f6;color:#fff;}
+  .d10 .btn-ghost{background:#f2f4f6;color:#4e5968;}
+</style>
+</head>
+<body>
+<header>
+  <h1>🎨 방탈출 쿠폰 — 디자인 방향 10종</h1>
+  <p>각 카드의 쿠폰 미리보기와 버튼 스타일을 비교해 보고, 마음에 드는 번호를 골라주세요</p>
+</header>
+
+<div class="grid" id="grid"></div>
+
+<script>
+const DIRS = [
+  {n:1, cls:'d1', name:'미스터리 다크', tag:'방탈출 분위기 ★', desc:'어두운 배경 + 보라 네온. 방탈출 특유의 몰입·미스터리한 무드. 지금 보고서와 톤 일치.',
+   sw:['#13151f','#6d28d9','#a78bfa','#2a2d3d'], sub:'다른 테마 쿠폰', glow:true},
+  {n:2, cls:'d2', name:'모던 미니멀', tag:'무난·범용', desc:'화이트 기반에 블랙 포인트. 깔끔하고 신뢰감. 현재 화면의 정돈된 업그레이드 버전.',
+   sw:['#ffffff','#111827','#f3f4f6','#e5e7eb'], sub:'쿠폰'},
+  {n:3, cls:'d3', name:'네온 사이버', tag:'임팩트 강함', desc:'검정 + 형광 그린/핑크 글로우. SF·해킹·미래형 테마방에 강렬하게 어울림.',
+   sw:['#06080d','#00ff95','#ff3ea5','#143a2a'], sub:'SECRET COUPON'},
+  {n:4, cls:'d4', name:'빈티지 추리', tag:'추리·셜록', desc:'세피아 크라프트지 + 세리프. 추리·시대극·탐정 테마방의 고전적 감성.',
+   sw:['#f3ead3','#5a4a32','#cdbb93','#8a7350'], sub:'探偵 쿠폰'},
+  {n:5, cls:'d5', name:'플레이풀 팝', tag:'친근·캐주얼', desc:'두꺼운 외곽선 + 입체 그림자(뉴브루탈리즘). 밝고 통통 튀는 친근한 느낌.',
+   sw:['#ffd23f','#ff5d8f','#4ad7d4','#111111'], sub:'쿠폰 도착!'},
+  {n:6, cls:'d6', name:'럭셔리 골드', tag:'프리미엄', desc:'다크 + 골드 그라데이션. 고급 VIP·프리미엄 테마, 선물 쿠폰에 어울림.',
+   sw:['#10100c','#e7c65b','#b8902c','#ece3c8'], sub:'PREMIUM'},
+  {n:7, cls:'d7', name:'글래스모피즘', tag:'트렌디', desc:'컬러풀 그라데이션 위 반투명 유리. 모바일에서 세련되고 화사한 인상.',
+   sw:['#6d28d9','#ec4899','#f59e0b','#ffffff'], sub:'COUPON', wrap:true},
+  {n:8, cls:'d8', name:'레트로 아케이드', tag:'개성·게임', desc:'8비트 픽셀 폰트 + 비비드. 게임·오락실 콘셉트, 젊은 타깃에 개성 만점.',
+   sw:['#1a1030','#ff5277','#ffe66d','#3ddc97'], sub:'PLAYER 1'},
+  {n:9, cls:'d9', name:'호러 블러드', tag:'공포 테마', desc:'블랙 + 핏빛 레드. 공포·스릴러 테마방 전용으로 극강의 분위기.',
+   sw:['#0a0506','#a01414','#ff5a5a','#5a1a1a'], sub:'WARNING'},
+  {n:10, cls:'d10', name:'클린 카드 (토스풍)', tag:'국내 친숙 ★', desc:'부드러운 그림자 + 파랑 포인트. 토스·카뱅처럼 한국 사용자에게 가장 익숙·신뢰.',
+   sw:['#ffffff','#3182f6','#f1f6ff','#4e5968'], sub:'쿠폰'},
+];
+
+const grid = document.getElementById('grid');
+grid.innerHTML = DIRS.map(d => {
+  const card = `
+    <div class="card">
+      <div class="top">
+        <div class="sub">${d.sub}</div>
+        <div class="ben">다른 테마 20% 할인</div>
+      </div>
+      <div class="body">
+        <div class="qr"></div>
+        <div class="btns">
+          <button class="btn btn-primary">쿠폰 사용</button>
+          <button class="btn btn-ghost">자세히</button>
+        </div>
+      </div>
+    </div>`;
+  const preview = d.wrap ? `<div class="d7-wrap">${card}</div>` : card;
+  return `
+  <div class="panel ${d.cls}">
+    <div class="panel-head">
+      <div class="row">
+        <div class="pnum">${d.n}</div>
+        <div class="pname pname2">${d.name}</div>
+        <div class="ptag">${d.tag}</div>
+      </div>
+      <div class="pdesc">${d.desc}</div>
+      <div class="swatches">${d.sw.map(c=>`<div class="sw" style="background:${c}"></div>`).join('')}</div>
+    </div>
+    <div class="preview">
+      ${preview}
+      <div class="btns">
+        <button class="btn btn-primary">기본 버튼</button>
+        <button class="btn btn-ghost">보조 버튼</button>
+        <button class="btn btn-primary btn-sm">작은 버튼</button>
+      </div>
+    </div>
+  </div>`;
+}).join('');
+</script>
+</body>
+</html>

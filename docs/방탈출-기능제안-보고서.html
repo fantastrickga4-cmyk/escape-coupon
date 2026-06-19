@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>방탈출 쿠폰 발행기 — 추가 기능 제안 보고서</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    font-family:'Pretendard','Segoe UI','Malgun Gothic',sans-serif;
+    background:#0f1117; color:#e2e8f0; line-height:1.7; padding-bottom:60px;
+  }
+  header {
+    background:linear-gradient(135deg,#4c1d95,#6d28d9 60%,#7c3aed);
+    color:#fff; padding:48px 24px 40px; text-align:center;
+  }
+  header h1 { font-size:2rem; font-weight:800; margin-bottom:8px; }
+  header p { opacity:.92; font-size:.95rem; }
+  .meta { margin-top:14px; font-size:.8rem; opacity:.78; }
+  .wrap { max-width:880px; margin:0 auto; padding:0 20px; }
+  .intro {
+    background:#1a1d29; border:1px solid #2d2f3d; border-radius:16px; padding:22px 24px;
+    margin:-22px auto 28px; box-shadow:0 10px 30px rgba(0,0,0,.4); position:relative; max-width:880px;
+  }
+  .intro h2 { font-size:1rem; color:#a78bfa; margin-bottom:6px; }
+  .intro p { font-size:.9rem; color:#cbd5e1; }
+  .intro b { color:#ddd6fe; }
+  .focus { display:flex; gap:8px; flex-wrap:wrap; margin-top:12px; }
+  .focus span {
+    font-size:.78rem; font-weight:600; padding:5px 12px; border-radius:20px;
+    background:rgba(124,58,237,.15); color:#c4b5fd; border:1px solid rgba(124,58,237,.35);
+  }
+
+  .section-title { font-size:1.15rem; font-weight:800; margin:30px 0 6px; color:#f8fafc; }
+  .group-label { font-size:.8rem; color:#a78bfa; font-weight:700; margin:22px 0 10px; letter-spacing:.02em; }
+
+  .card {
+    background:#1a1d29; border:1px solid #2d2f3d; border-radius:14px;
+    padding:20px 22px; margin-bottom:14px;
+  }
+  .card-head { display:flex; align-items:flex-start; gap:14px; }
+  .num {
+    flex-shrink:0; width:38px; height:38px; border-radius:10px;
+    background:rgba(124,58,237,.18); color:#a78bfa; font-weight:800; font-size:1.1rem;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .card-head .t { flex:1; }
+  .card-head h3 { font-size:1.12rem; font-weight:700; color:#f1f5f9; }
+  .card-head .summary { font-size:.86rem; color:#94a3b8; margin-top:2px; }
+  .badges { display:flex; gap:6px; flex-shrink:0; flex-wrap:wrap; justify-content:flex-end; }
+  .badge { font-size:.7rem; font-weight:700; padding:3px 9px; border-radius:12px; white-space:nowrap; }
+  .p-high { background:rgba(239,68,68,.15); color:#f87171; }
+  .p-mid  { background:rgba(245,158,11,.15); color:#fbbf24; }
+  .p-low  { background:rgba(59,130,246,.15); color:#60a5fa; }
+  .e-low  { background:rgba(34,197,94,.15); color:#4ade80; }
+  .e-mid  { background:rgba(234,179,8,.15); color:#facc15; }
+  .e-high { background:rgba(148,163,184,.15); color:#cbd5e1; }
+
+  .desc { margin-top:12px; font-size:.9rem; color:#cbd5e1; }
+  .desc b { color:#e9d5ff; }
+  .effect {
+    margin-top:10px; font-size:.85rem; color:#c4b5fd; background:rgba(124,58,237,.1);
+    border-left:3px solid #7c3aed; padding:8px 12px; border-radius:0 8px 8px 0;
+  }
+  .effect b { color:#ddd6fe; }
+
+  .roadmap { background:#1a1d29; border-radius:14px; padding:22px 24px; border:1px solid #2d2f3d; }
+  .phase { display:flex; gap:14px; padding:12px 0; border-bottom:1px dashed #2d2f3d; }
+  .phase:last-child { border-bottom:none; }
+  .phase .tag {
+    flex-shrink:0; font-weight:800; font-size:.8rem; padding:4px 10px; border-radius:8px;
+    height:fit-content; background:#7c3aed; color:#fff;
+  }
+  .phase .body h4 { font-size:.95rem; margin-bottom:2px; color:#f1f5f9; }
+  .phase .body p { font-size:.84rem; color:#94a3b8; }
+
+  .legend { font-size:.75rem; color:#64748b; margin:18px 0 4px; text-align:center; }
+  footer { text-align:center; font-size:.78rem; color:#64748b; margin-top:30px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>🔓 방탈출 쿠폰 발행기 — 추가 기능 제안</h1>
+  <p>"같은 테마는 한 번뿐" 방탈출 비즈니스에 맞춘 기능 10선</p>
+  <div class="meta">작성일 2026-06-19 · 현재 구현: 멀티매장(1·2·3호점) · 1회용 보장 · 문자 발송 · 관리자 대시보드</div>
+</header>
+
+<div class="intro">
+  <h2>관점 전환</h2>
+  <p>방탈출은 일반 매장과 달리 <b>같은 테마를 반복 방문할 이유가 없습니다.</b>
+  그래서 "단골 재방문"이 아니라 아래 4가지에 쿠폰 전략을 맞춰야 합니다.</p>
+  <div class="focus">
+    <span>① 입소문 = 신규 고객 유입</span>
+    <span>② 다른 테마로 유도</span>
+    <span>③ 빈 시간대 채우기</span>
+    <span>④ 운영 효율</span>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <div class="section-title">추가 기능 10선</div>
+
+  <div class="group-label">▍ ① 입소문 — 신규 고객 유입 (방탈출 성장의 핵심)</div>
+
+  <!-- 1 -->
+  <div class="card">
+    <div class="card-head">
+      <div class="num">1</div>
+      <div class="t">
+        <h3>친구 추천 쿠폰 (입소문 엔진)</h3>
+        <div class="summary">플레이한 팀이 친구에게 보낼 추천 쿠폰 → 새 팀이 쓰면 양쪽 혜택</div>
+      </div>
+      <div class="badges"><span class="badge p-high">우선순위 높음</span><span class="badge e-mid">난이도 중</span></div>
+    </div>
+    <div class="desc">방탈출은 <b>"재밌었다"는 입소문</b>으로 신규 팀이 옵니다. 게임 후 추천 코드를 주고,
+    추천받은 새 팀이 예약·이용하면 추천한 사람에게도 보상(다른 테마 할인 등)을 주는 구조.
+    한 번 온 손님을 <b>신규 손님을 데려오는 채널</b>로 만듭니다.</div>
+    <div class="effect"><b>효과</b> · 신규 팀 유입 ↑, 마케팅비 없이 자연 확산</div>
+  </div>
+
+  <!-- 2 -->
+  <div class="card">
+    <div class="card-head">
+      <div class="num">2</div>
+      <div class="t">
+        <h3>리뷰 작성 보상 쿠폰</h3>
+        <div class="summary">네이버·구글 리뷰 인증 시 다음 테마 할인 쿠폰 지급</div>
+      </div>
+      <div class="badges"><span class="badge p-high">우선순위 높음</span><span class="badge e-mid">난이도 중</span></div>
+    </div>
+    <div class="desc">방탈출 예약은 <b>리뷰·평점</b>에 크게 좌우됩니다. 게임 후 리뷰를 남기면
+    쿠폰을 주는 방식으로 양질의 후기를 쌓아 신규 예약 전환율을 높입니다.</div>
+    <div class="effect"><b>효과</b> · 리뷰 수·평점 ↑ → 신규 예약 ↑ (방탈출은 리뷰가 곧 매출)</div>
+  </div>
+
+  <!-- 3 -->
+  <div class="card">
+    <div class="card-head">
+      <div class="num">3</div>
+      <div class="t">
+        <h3>선물(기프트) 쿠폰</h3>
+        <div class="summary">커플·생일·모임 선물용 이용권을 구매 → 받는 사람이 사용</div>
+      </div>
+      <div class="badges"><span class="badge p-mid">우선순위 중</span><span class="badge e-mid">난이도 중</span></div>
+    </div>
+    <div class="desc">방탈출은 <b>데이트·생일·회식 선물</b>로 인기가 높습니다. 구매자가 기프트 쿠폰을 사서
+    상대에게 보내면, 받는 사람이 그 자체로 신규 고객이 됩니다.</div>
+    <div class="effect"><b>효과</b> · 선결제 매출 발생, 선물 받은 사람 = 신규 유입</div>
+  </div>
+
+  <div class="group-label">▍ ② 다른 테마로 유도 (방탈출판 "재방문")</div>
+
+  <!-- 4 -->
+  <div class="card">
+    <div class="card-head">
+      <div class="num">4</div>
+      <div class="t">
+        <h3>테마(룸) 관리 + 테마별 쿠폰</h3>
+        <div class="summary">매장별 테마 등록, 쿠폰을 특정 테마에만 적용/제외</div>
+      </div>
+      <div class="badges"><span class="badge p-high">우선순위 높음(기반)</span><span class="badge e-mid">난이도 중</span></div>
+    </div>
+    <div class="desc">"공포관 / 추리관 / 감성관"처럼 테마를 등록하고, 쿠폰을 <b>특정 테마 전용</b>으로 발급하거나
+    이미 플레이한 테마는 제외할 수 있게 합니다. 아래 ⑤번 기능의 토대.</div>
+    <div class="effect"><b>효과</b> · 테마 단위 운영·마케팅 가능, 신규/비인기 테마 집중 홍보</div>
+  </div>
+
+  <!-- 5 -->
+  <div class="card">
+    <div class="card-head">
+      <div class="num">5</div>
+      <div class="t">
+        <h3>"다음엔 다른 테마" 유도 쿠폰</h3>
+        <div class="summary">플레이한 테마는 빼고, 안 해본 테마 할인 쿠폰 자동 발급</div>
+      </div>
+      <div class="badges"><span class="badge p-high">우선순위 높음</span><span class="badge e-mid">난이도 중</span></div>
+    </div>
+    <div class="desc">게임을 마친 팀에게 <b>그들이 아직 안 해본 테마</b>를 할인해주는 쿠폰을 줍니다.
+    같은 테마는 못 오지만 <b>다른 테마로는 다시 올 이유</b>를 만드는, 방탈출에 맞는 유일한 "재방문" 전략.</div>
+    <div class="effect"><b>효과</b> · 보유 테마 소진율 ↑, 한 고객의 총 이용 횟수 ↑</div>
+  </div>
+
+  <!-- 6 -->
+  <div class="card">
+    <div class="card-head">
+      <div class="num">6</div>
+      <div class="t">
+        <h3>신규 테마 오픈 알림 쿠폰</h3>
+        <div class="summary">새 테마 출시 시 과거 이용 고객에게 오픈 기념 쿠폰 발송</div>
+      </div>
+      <div class="badges"><span class="badge p-mid">우선순위 중</span><span class="badge e-low">난이도 하</span></div>
+    </div>
+    <div class="desc">새 테마가 나오면 <b>이미 우리 매장을 경험한 번호</b>로 오픈 기념 쿠폰을 보냅니다.
+    "콘텐츠가 추가됐다"는 것이 방탈출에서 과거 손님을 다시 부르는 가장 강력한 명분.</div>
+    <div class="effect"><b>효과</b> · 신규 테마 초기 예약률 ↑, 과거 고객 재유치</div>
+  </div>
+
+  <div class="group-label">▍ ③ 빈 시간대 채우기 (예약 비즈니스의 수익 관리)</div>
+
+  <!-- 7 -->
+  <div class="card">
+    <div class="card-head">
+      <div class="num">7</div>
+      <div class="t">
+        <h3>시간대·요일 한정 쿠폰</h3>
+        <div class="summary">평일 낮·비수기 시간대에만 쓰는 할인으로 빈 방 채우기</div>
+      </div>
+      <div class="badges"><span class="badge p-high">우선순위 높음</span><span class="badge e-low">난이도 하</span></div>
+    </div>
+    <div class="desc">방탈출은 <b>주말·저녁은 꽉 차고 평일 낮은 텅 빕니다.</b> "평일 2~5시 30% 할인"처럼
+    한산한 슬롯에만 유효한 쿠폰으로 노는 방을 채워 가동률을 끌어올립니다.</div>
+    <div class="effect"><b>효과</b> · 비수기 가동률·매출 ↑, 고정비(임대·인건비) 효율화</div>
+  </div>
+
+  <!-- 8 -->
+  <div class="card">
+    <div class="card-head">
+      <div class="num">8</div>
+      <div class="t">
+        <h3>인원수(단체) 할인 쿠폰</h3>
+        <div class="summary">4인 이상 등 인원 규모에 따라 할인폭 차등</div>
+      </div>
+      <div class="badges"><span class="badge p-mid">우선순위 중</span><span class="badge e-low">난이도 하</span></div>
+    </div>
+    <div class="desc">방탈출은 <b>팀 단위(보통 2~6인)</b> 활동입니다. 인원이 많을수록 객단가가 크니
+    "5인 이상 단체 할인"으로 큰 팀·회식·모임 예약을 유도합니다.</div>
+    <div class="effect"><b>효과</b> · 1회 예약당 매출 ↑, 단체·기업 행사 유치</div>
+  </div>
+
+  <!-- 9 -->
+  <div class="card">
+    <div class="card-head">
+      <div class="num">9</div>
+      <div class="t">
+        <h3>예약 연동 / 예약번호로 쿠폰 적용</h3>
+        <div class="summary">전화·네이버 예약과 쿠폰을 연결, 예약 단계에서 할인 적용·검증</div>
+      </div>
+      <div class="badges"><span class="badge p-mid">우선순위 중</span><span class="badge e-high">난이도 상</span></div>
+    </div>
+    <div class="desc">방탈출은 <b>예약제</b>가 기본입니다. 예약 시 쿠폰을 미리 적용하거나, 예약번호와 묶어
+    현장에서 검증하면 노쇼·중복할인 혼선을 줄이고 정산이 깔끔해집니다.</div>
+    <div class="effect"><b>효과</b> · 예약-쿠폰 정합성 ↑, 현장 응대·정산 단순화</div>
+  </div>
+
+  <div class="group-label">▍ ④ 운영 효율 (프론트 데스크 신뢰성)</div>
+
+  <!-- 10 -->
+  <div class="card">
+    <div class="card-head">
+      <div class="num">10</div>
+      <div class="t">
+        <h3>실시간 사용 현황 & 사용 취소(되돌리기)</h3>
+        <div class="summary">데스크에서 사용 즉시 표시 + 오처리 복구 + 활동 로그</div>
+      </div>
+      <div class="badges"><span class="badge p-mid">우선순위 중</span><span class="badge e-low">난이도 하</span></div>
+    </div>
+    <div class="desc">접수 데스크에서 쿠폰 사용이 실시간으로 보이고, 실수로 처리한 쿠폰을 되돌릴 수 있습니다.
+    여러 타임·여러 팀이 몰리는 방탈출 데스크에서 <b>혼선과 분쟁을 방지</b>합니다.</div>
+    <div class="effect"><b>효과</b> · 오류 복구, 처리 이력 추적, 데스크 운영 신뢰성 ↑</div>
+  </div>
+
+  <div class="legend">우선순위·난이도는 "효과 대비 구현 비용" 기준 권장값이며, 매장 운영 상황에 따라 조정 가능합니다.</div>
+
+  <div class="section-title">권장 도입 로드맵</div>
+  <div class="roadmap">
+    <div class="phase">
+      <div class="tag">1단계</div>
+      <div class="body">
+        <h4>기반 + 즉효 (빈 방 채우기 · 운영 안정)</h4>
+        <p>④ 테마 관리(기반) · ⑦ 시간대·요일 한정 쿠폰 · ⑩ 실시간 현황·사용취소</p>
+      </div>
+    </div>
+    <div class="phase">
+      <div class="tag">2단계</div>
+      <div class="body">
+        <h4>유입 엔진 + 다른 테마 유도</h4>
+        <p>① 친구 추천 쿠폰 · ② 리뷰 보상 쿠폰 · ⑤ "다음엔 다른 테마" 유도 쿠폰</p>
+      </div>
+    </div>
+    <div class="phase">
+      <div class="tag">3단계</div>
+      <div class="body">
+        <h4>매출 확장 + 고도화</h4>
+        <p>③ 선물 쿠폰 · ⑧ 단체 할인 · ⑥ 신규 테마 오픈 알림 · ⑨ 예약 연동</p>
+      </div>
+    </div>
+  </div>
+
+  <footer>© 방탈출 쿠폰 시스템 — 기능 제안 보고서</footer>
+</div>
+</body>
+</html>

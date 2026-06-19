@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>쿠폰 발행기 — 추가 기능 제안 보고서</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    font-family:'Pretendard','Segoe UI','Malgun Gothic',sans-serif;
+    background:#f1f5f9; color:#1e293b; line-height:1.7; padding-bottom:60px;
+  }
+  header {
+    background:linear-gradient(135deg,#0f766e,#059669);
+    color:#fff; padding:48px 24px 40px; text-align:center;
+  }
+  header h1 { font-size:2rem; font-weight:800; margin-bottom:8px; }
+  header p { opacity:.9; font-size:.95rem; }
+  .meta { margin-top:14px; font-size:.8rem; opacity:.8; }
+  .wrap { max-width:880px; margin:0 auto; padding:0 20px; }
+  .intro {
+    background:#fff; border-radius:16px; padding:22px 24px; margin:-22px auto 28px;
+    box-shadow:0 6px 24px rgba(15,23,42,.08); position:relative; max-width:880px;
+  }
+  .intro h2 { font-size:1rem; color:#0f766e; margin-bottom:6px; }
+  .intro p { font-size:.9rem; color:#475569; }
+
+  .section-title { font-size:1.15rem; font-weight:800; margin:30px 0 14px; color:#0f172a; }
+
+  .card {
+    background:#fff; border:1px solid #e2e8f0; border-radius:14px;
+    padding:20px 22px; margin-bottom:14px; box-shadow:0 2px 8px rgba(15,23,42,.04);
+  }
+  .card-head { display:flex; align-items:flex-start; gap:14px; }
+  .num {
+    flex-shrink:0; width:38px; height:38px; border-radius:10px;
+    background:#ecfdf5; color:#059669; font-weight:800; font-size:1.1rem;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .card-head .t { flex:1; }
+  .card-head h3 { font-size:1.12rem; font-weight:700; color:#0f172a; }
+  .card-head .summary { font-size:.86rem; color:#64748b; margin-top:2px; }
+  .badges { display:flex; gap:6px; flex-shrink:0; flex-wrap:wrap; justify-content:flex-end; }
+  .badge { font-size:.7rem; font-weight:700; padding:3px 9px; border-radius:12px; white-space:nowrap; }
+  .p-high { background:#fef2f2; color:#dc2626; }
+  .p-mid  { background:#fffbeb; color:#d97706; }
+  .p-low  { background:#eff6ff; color:#2563eb; }
+  .e-low  { background:#f0fdf4; color:#16a34a; }
+  .e-mid  { background:#fef3c7; color:#b45309; }
+  .e-high { background:#f1f5f9; color:#475569; }
+
+  .desc { margin-top:12px; font-size:.9rem; color:#334155; }
+  .effect {
+    margin-top:10px; font-size:.85rem; color:#0f766e; background:#f0fdfa;
+    border-left:3px solid #14b8a6; padding:8px 12px; border-radius:0 8px 8px 0;
+  }
+  .effect b { color:#0f766e; }
+
+  .roadmap { background:#fff; border-radius:14px; padding:22px 24px; border:1px solid #e2e8f0; }
+  .phase { display:flex; gap:14px; padding:12px 0; border-bottom:1px dashed #e2e8f0; }
+  .phase:last-child { border-bottom:none; }
+  .phase .tag {
+    flex-shrink:0; font-weight:800; font-size:.8rem; padding:4px 10px; border-radius:8px;
+    height:fit-content; background:#0f172a; color:#fff;
+  }
+  .phase .body h4 { font-size:.95rem; margin-bottom:2px; }
+  .phase .body p { font-size:.84rem; color:#64748b; }
+
+  .legend { font-size:.75rem; color:#94a3b8; margin:18px 0 4px; text-align:center; }
+  footer { text-align:center; font-size:.78rem; color:#94a3b8; margin-top:30px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>쿠폰 발행기 — 추가 기능 제안 보고서</h1>
+  <p>매장용 1회용 쿠폰 발급·사용 시스템에 더하면 좋을 기능 10선</p>
+  <div class="meta">작성일 2026-06-19 · 현재 구현: 멀티매장(1·2·3호점) · 1회용 보장 · 문자 발송 · 관리자 대시보드</div>
+</header>
+
+<div class="intro">
+  <h2>요약</h2>
+  <p>지금 시스템은 <b>발급 → 문자 전달 → 직원 사용처리</b>의 핵심 흐름이 완성돼 있습니다.
+  여기서 한 단계 더 나아가 <b>① 재방문(단골화) ② 운영 효율 ③ 데이터 분석</b> 세 축으로
+  가치를 키울 수 있는 기능 10가지를 우선순위와 구현 난이도와 함께 정리했습니다.</p>
+</div>
+
+<div class="wrap">
+
+  <div class="section-title">추가 기능 10선</div>
+
+  <!-- 1 -->
+  <div class="card">
+    <div class="card-head">
+      <div class="num">1</div>
+      <div class="t">
+        <h3>실시간 사용 현황 & 사용 알림</h3>
+        <div class="summary">쿠폰이 사용되는 즉시 관리자 화면에 표시 / 소리·알림</div>
+      </div>
+      <div class="badges"><span class="badge p-high">우선순위 높음</span><span class="badge e-low">난이도 하</span></div>
+    </div>
+    <div class="desc">대시보드가 자동 갱신되어 "방금 2호점에서 음료쿠폰 사용" 같은 실시간 로그가 뜹니다.
+    사장님이 매장 현황을 실시간으로 파악하고, 이상 사용(짧은 시간 대량 사용)도 바로 감지할 수 있습니다.</div>
+    <div class="effect"><b>효과</b> · 운영 가시성 ↑, 부정사용 조기 발견, 별도 확인 작업 불필요</div>
+  </div>
+
+  <!-- 2 -->
+  <div class="card">
+    <div class="card-head">
+      <div class="num">2</div>
+      <div class="t">
+        <h3>단골 적립 · 스탬프 (재방문 유도)</h3>
+        <div class="summary">전화번호 기준 방문 누적 → N회 달성 시 보상 쿠폰 자동 발급</div>
+      </div>
+      <div class="badges"><span class="badge p-high">우선순위 높음</span><span class="badge e-mid">난이도 중</span></div>
+    </div>
+    <div class="desc">"10번 방문하면 1잔 무료"처럼 쿠폰 사용 시 그 번호의 방문 횟수를 쌓고,
+    목표 달성 시 자동으로 보상 쿠폰을 발급/발송합니다. 일회성 할인을 <b>반복 방문</b>으로 전환하는 핵심 기능.</div>
+    <div class="effect"><b>효과</b> · 재방문율·고객생애가치(LTV) ↑, 단골 고객 데이터 확보</div>
+  </div>
+
+  <!-- 3 -->
+  <div class="card">
+    <div class="card-head">
+      <div class="num">3</div>
+      <div class="t">
+        <h3>만료 임박 자동 리마인드</h3>
+        <div class="summary">아직 안 쓴 쿠폰을 만료 며칠 전 대상자만 추려 재발송</div>
+      </div>
+      <div class="badges"><span class="badge p-mid">우선순위 중</span><span class="badge e-low">난이도 하</span></div>
+    </div>
+    <div class="desc">발급했지만 미사용 상태인 쿠폰의 수신번호 목록을 자동으로 모아,
+    "쿠폰이 곧 만료돼요!" 리마인드 문자 발송 도우미를 띄웁니다(기존 발송 화면 재활용).</div>
+    <div class="effect"><b>효과</b> · 쿠폰 사용률(전환율) ↑, 잠자는 쿠폰 회수</div>
+  </div>
+
+  <!-- 4 -->
+  <div class="card">
+    <div class="card-head">
+      <div class="num">4</div>
+      <div class="t">
+        <h3>쿠폰 종류 · 사용조건 다양화</h3>
+        <div class="summary">할인율/금액/사은품/1+1, 최소금액·사용가능 시간대·요일 제한</div>
+      </div>
+      <div class="badges"><span class="badge p-mid">우선순위 중</span><span class="badge e-mid">난이도 중</span></div>
+    </div>
+    <div class="desc">"2만원 이상", "평일 오후 2~5시만" 같은 조건을 캠페인에 설정하고,
+    고객 쿠폰 화면과 직원 사용처리 화면에 조건을 표시합니다. 한산한 시간대 유도 등 마케팅 정교화.</div>
+    <div class="effect"><b>효과</b> · 객단가 ↑, 피크/비피크 분산, 캠페인 유연성 ↑</div>
+  </div>
+
+  <!-- 5 -->
+  <div class="card">
+    <div class="card-head">
+      <div class="num">5</div>
+      <div class="t">
+        <h3>발급 · 사용 한도 관리 & 자동 마감</h3>
+        <div class="summary">캠페인별 최대 사용 수량 제한, 소진 시 자동 종료</div>
+      </div>
+      <div class="badges"><span class="badge p-high">우선순위 높음</span><span class="badge e-low">난이도 하</span></div>
+    </div>
+    <div class="desc">"선착순 100명"처럼 사용 가능 수량을 정하면, 한도 도달 시 이후 쿠폰은 자동으로
+    "마감되었습니다" 처리됩니다. 과도한 비용 지출(혜택 폭주)을 예산 안에서 통제.</div>
+    <div class="effect"><b>효과</b> · 비용 예측·통제, 선착순 마케팅 가능</div>
+  </div>
+
+  <!-- 6 -->
+  <div class="card">
+    <div class="card-head">
+      <div class="num">6</div>
+      <div class="t">
+        <h3>통계 · 리포트 고도화</h3>
+        <div class="summary">기간/시간대/호점/캠페인별 사용률 + 발송 대비 전환율</div>
+      </div>
+      <div class="badges"><span class="badge p-mid">우선순위 중</span><span class="badge e-mid">난이도 중</span></div>
+    </div>
+    <div class="desc">"언제·어느 호점·어떤 캠페인이 가장 잘 먹혔는지" 그래프로 보여줍니다.
+    발송 100건 중 몇 건이 실제 사용됐는지(전환율)까지 추적해 다음 캠페인을 데이터로 결정.</div>
+    <div class="effect"><b>효과</b> · 데이터 기반 의사결정, 효과 좋은 캠페인 반복</div>
+  </div>
+
+  <!-- 7 -->
+  <div class="card">
+    <div class="card-head">
+      <div class="num">7</div>
+      <div class="t">
+        <h3>사용 내역 엑셀(CSV) 내보내기</h3>
+        <div class="summary">발급·사용 내역을 다운로드해 정산·분석에 활용</div>
+      </div>
+      <div class="badges"><span class="badge p-low">우선순위 보통</span><span class="badge e-low">난이도 하</span></div>
+    </div>
+    <div class="desc">캠페인별/기간별 내역을 CSV로 내려받아 엑셀에서 정산하거나 회계 자료로 보관합니다.
+    프랜차이즈 본사 보고나 세무 자료로도 유용.</div>
+    <div class="effect"><b>효과</b> · 정산·보고 편의, 외부 도구 연계</div>
+  </div>
+
+  <!-- 8 -->
+  <div class="card">
+    <div class="card-head">
+      <div class="num">8</div>
+      <div class="t">
+        <h3>고객 쿠폰 지갑</h3>
+        <div class="summary">전화번호로 내가 받은 쿠폰을 한 화면에 모아보기</div>
+      </div>
+      <div class="badges"><span class="badge p-low">우선순위 보통</span><span class="badge e-mid">난이도 중</span></div>
+    </div>
+    <div class="desc">고객이 여러 쿠폰을 받았을 때 링크마다 따로 열 필요 없이,
+    번호 인증으로 보유 쿠폰(사용/미사용/만료)을 한눈에 보고 사용할 수 있게 합니다.</div>
+    <div class="effect"><b>효과</b> · 고객 편의 ↑, 쿠폰 분실 방지, 사용률 ↑</div>
+  </div>
+
+  <!-- 9 -->
+  <div class="card">
+    <div class="card-head">
+      <div class="num">9</div>
+      <div class="t">
+        <h3>직원 활동 로그 & 사용 취소(되돌리기)</h3>
+        <div class="summary">누가·언제 처리했는지 기록 + 오처리 복구 기능</div>
+      </div>
+      <div class="badges"><span class="badge p-mid">우선순위 중</span><span class="badge e-low">난이도 하</span></div>
+    </div>
+    <div class="desc">실수로 사용처리한 쿠폰을 관리자가 되돌릴 수 있고, 모든 처리 이력을 남깁니다.
+    여러 직원·호점 운영 시 책임 추적과 분쟁 방지에 필수.</div>
+    <div class="effect"><b>효과</b> · 오류 복구, 감사 추적, 운영 신뢰성 ↑</div>
+  </div>
+
+  <!-- 10 -->
+  <div class="card">
+    <div class="card-head">
+      <div class="num">10</div>
+      <div class="t">
+        <h3>카카오 알림톡 · 친구톡 연동 (선택)</h3>
+        <div class="summary">발송량이 커지면 자동 대량 발송으로 확장 (유료)</div>
+      </div>
+      <div class="badges"><span class="badge p-low">우선순위 낮음</span><span class="badge e-high">난이도 상</span></div>
+    </div>
+    <div class="desc">지금은 직원 폰으로 무료 발송하지만, 수백~수천 건 규모로 커지면
+    카카오 알림톡/친구톡 연동으로 버튼 한 번에 자동 발송합니다. 건당 과금이 발생하므로 규모가 커진 뒤 도입.</div>
+    <div class="effect"><b>효과</b> · 대량 발송 자동화 · 도달률 ↑ <span style="color:#dc2626">(건당 비용 발생)</span></div>
+  </div>
+
+  <div class="legend">우선순위·난이도는 "효과 대비 구현 비용" 기준의 권장값이며, 실제 운영 상황에 따라 조정 가능합니다.</div>
+
+  <div class="section-title">권장 도입 로드맵</div>
+  <div class="roadmap">
+    <div class="phase">
+      <div class="tag">1단계</div>
+      <div class="body">
+        <h4>운영 기반 다지기 (빠르고 효과 큼)</h4>
+        <p>① 실시간 사용 현황·알림 · ⑤ 한도 관리/자동 마감 · ⑨ 사용 취소·활동 로그 · ⑦ CSV 내보내기</p>
+      </div>
+    </div>
+    <div class="phase">
+      <div class="tag">2단계</div>
+      <div class="body">
+        <h4>매출·재방문 키우기</h4>
+        <p>② 단골 적립·스탬프 · ③ 만료 임박 리마인드 · ④ 쿠폰 종류·조건 다양화</p>
+      </div>
+    </div>
+    <div class="phase">
+      <div class="tag">3단계</div>
+      <div class="body">
+        <h4>고도화·확장</h4>
+        <p>⑥ 통계 리포트 고도화 · ⑧ 고객 쿠폰 지갑 · ⑩ 카카오 알림톡 연동(규모 확장 시)</p>
+      </div>
+    </div>
+  </div>
+
+  <footer>© 매장 쿠폰 시스템 — 기능 제안 보고서</footer>
+</div>
+</body>
+</html>
