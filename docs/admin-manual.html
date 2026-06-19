@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<style>
+  *{margin:0;padding:0;box-sizing:border-box;font-family:'Pretendard','Malgun Gothic',sans-serif;}
+  body{background:#fff7e0;width:960px;}
+  .wrap{padding:32px 34px;}
+  .ink{color:#111;}
+  h1{font-size:34px;font-weight:900;}
+  .head{background:#ffd23f;border:3px solid #111;border-radius:20px;box-shadow:7px 7px 0 #111;padding:22px 26px;margin-bottom:6px;display:flex;align-items:center;gap:16px;}
+  .head .emoji{font-size:44px;}
+  .head .sub{font-weight:700;margin-top:4px;font-size:15px;}
+  .pill{display:inline-block;background:#fff;border:2px solid #111;border-radius:20px;padding:4px 12px;font-weight:800;font-size:13px;margin-top:8px;}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:18px;}
+  .card{background:#fff;border:3px solid #111;border-radius:18px;box-shadow:6px 6px 0 #111;padding:16px 18px;}
+  .card.full{grid-column:1 / -1;}
+  .ct{display:flex;align-items:center;gap:10px;}
+  .num{flex-shrink:0;width:38px;height:38px;border-radius:10px;background:#ff5d8f;color:#fff;border:2px solid #111;font-size:18px;font-weight:900;display:flex;align-items:center;justify-content:center;box-shadow:3px 3px 0 #111;}
+  .ct h2{font-size:17px;font-weight:900;}
+  .desc{font-size:14px;font-weight:600;color:#333;margin-top:8px;line-height:1.55;}
+  .chip{display:inline-block;border:2px solid #111;border-radius:8px;padding:2px 8px;font-weight:800;font-size:12.5px;margin:3px 4px 0 0;}
+  .c-pink{background:#ff5d8f;color:#fff;}.c-teal{background:#4ad7d4;}.c-yellow{background:#ffd23f;}.c-dark{background:#111;color:#fff;}.c-white{background:#fff;}
+  .sectit{font-size:15px;font-weight:900;margin:22px 0 2px;}
+  .note{background:#4ad7d4;border:3px solid #111;border-radius:18px;box-shadow:6px 6px 0 #111;padding:18px 22px;margin-top:18px;}
+  .note b{font-size:16px;font-weight:900;}
+  .note ul{margin:8px 0 0 20px;}
+  .note li{font-weight:700;font-size:14px;margin-top:5px;}
+</style>
+</head>
+<body>
+<div class="wrap ink">
+  <div class="head">
+    <div class="emoji">🛠️</div>
+    <div>
+      <h1>관리자용 사용 설명서</h1>
+      <div class="sub">방탈출 쿠폰 — 발행 · 발송 · 추천 · 현황 관리 전체 가이드</div>
+      <span class="pill">로그인: 관리자 비밀번호 입력</span>
+    </div>
+  </div>
+
+  <div class="grid">
+    <div class="card">
+      <div class="ct"><div class="num">1</div><h2>대시보드 한눈에 보기</h2></div>
+      <div class="desc">총 발급 · 사용 완료 · 미사용 수치와 <b>호점별 사용</b>을 확인. <span class="chip c-teal">실시간</span> <b>최근 사용 내역</b>이 15초마다 자동 갱신됩니다.</div>
+    </div>
+
+    <div class="card">
+      <div class="ct"><div class="num">2</div><h2>사용 취소(되돌리기)</h2></div>
+      <div class="desc">직원이 잘못 처리한 쿠폰은 최근 사용 내역의 <span class="chip c-white">사용 취소</span>로 미사용 상태로 복구. 모든 이력은 로그로 남습니다.</div>
+    </div>
+
+    <div class="card full">
+      <div class="ct"><div class="num">3</div><h2>새 캠페인 발행 (쿠폰 만들기)</h2></div>
+      <div class="desc"><b>쿠폰 유형</b> 선택 → 혜택·유효기간·수량 입력 → <span class="chip c-pink">발행하기</span>
+      <br>유형: <span class="chip c-white">일반</span><span class="chip c-white">리뷰 작성 보상</span><span class="chip c-white">친구 추천</span>
+      <br><b>“▸ 사용 조건 설정”</b> 펼치면 → <span class="chip c-yellow">요일 한정</span><span class="chip c-yellow">시간대 한정(예 14~17시)</span><span class="chip c-yellow">최소 인원(단체)</span></div>
+    </div>
+
+    <div class="card">
+      <div class="ct"><div class="num">4</div><h2>🚪 테마(방) 관리</h2></div>
+      <div class="desc">우리 매장 테마(공포관·추리관 등)를 등록·삭제. “다른 테마 유도” 쿠폰과 직원 사용 화면에 쓰입니다.</div>
+    </div>
+
+    <div class="card">
+      <div class="ct"><div class="num">5</div><h2>⏰ 빈 시간대 채우기</h2></div>
+      <div class="desc">평일 낮처럼 한산한 때만 쓰는 쿠폰을 <b>시간·요일 한정</b>으로 발행해 빈 방을 채웁니다.</div>
+    </div>
+
+    <div class="card full">
+      <div class="ct"><div class="num">6</div><h2>📩 문자로 쿠폰 보내기 (무료)</h2></div>
+      <div class="desc">캠페인 선택 → <b>번호 붙여넣기(여러 개)</b> → <span class="chip c-pink">발송 목록 만들기</span> → 번호별 <span class="chip c-teal">문자 보내기</span>(내 폰 문자앱이 내용까지 채워서 열림) 또는 <span class="chip c-yellow">복사</span>.
+      <br>“이미 플레이한 테마”를 고르면 그 테마 제외한 <b>다른 테마 유도 쿠폰</b>으로 발송됩니다.
+      <br>👉 서버가 아니라 <b>내 폰으로 발송</b>이라 문자 무제한 요금제면 <b>0원</b>.</div>
+    </div>
+
+    <div class="card full">
+      <div class="ct"><div class="num">7</div><h2>🤝 친구 추천 관리</h2></div>
+      <div class="desc">① 유형 “친구 추천” 캠페인 생성(친구 혜택 + 추천인 보상) → ② <b>추천 링크 생성</b>(추천인 번호 입력) → ③ <span class="chip c-teal">문자</span>로 추천인에게 링크 전달.
+      <br>친구가 링크에서 번호를 넣으면 <b>친구 쿠폰 + 추천인 보상 쿠폰</b>이 자동 발급됩니다. 발급된 보상도 목록에서 추천인에게 문자로 전달.</div>
+    </div>
+
+    <div class="card">
+      <div class="ct"><div class="num">8</div><h2>⭐ 리뷰 작성 보상</h2></div>
+      <div class="desc">유형 “리뷰 보상” + 리뷰 링크 입력. 고객 쿠폰 화면에 <b>리뷰 작성 버튼</b>이 떠서 후기를 유도합니다.</div>
+    </div>
+
+    <div class="card">
+      <div class="ct"><div class="num">9</div><h2>캠페인 상세 · 추적</h2></div>
+      <div class="desc">캠페인을 누르면 <b>전체 링크 일괄 복사</b>, 쿠폰별 사용/미사용·발송 번호 확인, 캠페인 삭제 가능.</div>
+    </div>
+  </div>
+
+  <div class="note">
+    <b>💡 운영 팁</b>
+    <ul>
+      <li><b>발급 흐름</b> : 캠페인 발행 → 문자/추천으로 전달 → 고객 QR → 직원이 사용 처리.</li>
+      <li><b>비용 0원</b> : 카카오/문자 API 대신 직원·사장 폰으로 직접 발송(문자 무제한 요금제 기준).</li>
+      <li><b>시간 제한은 한국시간(KST) 기준</b>으로 자동 판정됩니다.</li>
+      <li>리뷰·추천 캠페인은 “미리 발급 수량 0”으로 두고, 발송/추천 시점에 쿠폰이 생성됩니다.</li>
+    </ul>
+  </div>
+</div>
+</body>
+</html>

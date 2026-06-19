@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<style>
+  *{margin:0;padding:0;box-sizing:border-box;
+     font-family:'Pretendard','Apple SD Gothic Neo','Malgun Gothic',sans-serif;
+     -webkit-font-smoothing:antialiased;}
+  :root{--ink:#15171c;--muted:#737884;--line:#e9e8e3;--accent:#0f7a6b;--accent-soft:#e7f2f0;--bg:#f7f6f3;}
+  body{background:var(--bg);width:1000px;color:var(--ink);}
+  .wrap{padding:44px 46px;}
+
+  /* HERO */
+  .hero{background:#15171c;border-radius:20px;padding:42px 44px;color:#fff;position:relative;overflow:hidden;}
+  .hero .eyebrow{font-size:12px;letter-spacing:3px;font-weight:700;color:#7fd8c9;text-transform:uppercase;}
+  .hero h1{font-size:44px;font-weight:800;letter-spacing:-1.2px;margin-top:14px;}
+  .hero .tag{font-size:17px;color:#b6bac2;margin-top:14px;font-weight:400;line-height:1.6;max-width:620px;}
+  .hero .badges{display:flex;gap:9px;margin-top:26px;flex-wrap:wrap;}
+  .hbadge{border:1px solid #3a3d45;border-radius:30px;padding:8px 16px;font-size:13.5px;font-weight:600;color:#e7e8ea;}
+  .hbadge b{color:#7fd8c9;}
+  .hero .accentline{position:absolute;right:-60px;top:-60px;width:240px;height:240px;border:1.5px solid #2a2d34;border-radius:50%;}
+  .hero .accentline2{position:absolute;right:10px;top:30px;width:140px;height:140px;border:1.5px solid #23262c;border-radius:50%;}
+
+  /* FLOW */
+  .flow{display:flex;align-items:center;margin-top:26px;}
+  .fstep{flex:1;background:#fff;border:1px solid var(--line);border-radius:14px;padding:18px 14px;text-align:center;}
+  .fstep .ic{display:inline-flex;width:42px;height:42px;border-radius:11px;background:var(--accent-soft);
+     align-items:center;justify-content:center;color:var(--accent);}
+  .fstep .t{font-weight:700;font-size:14.5px;margin-top:10px;}
+  .fstep .d{font-size:12px;color:var(--muted);margin-top:3px;line-height:1.45;}
+  .arrow{color:#c7c5bd;padding:0 10px;display:flex;align-items:center;}
+
+  .sectit{font-size:13px;letter-spacing:2px;font-weight:700;color:var(--muted);text-transform:uppercase;margin:34px 2px 14px;}
+
+  /* FEATURES */
+  .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;}
+  .feat{background:#fff;border:1px solid var(--line);border-radius:16px;padding:22px;}
+  .feat .ic{display:inline-flex;width:46px;height:46px;border-radius:12px;background:var(--accent-soft);
+     align-items:center;justify-content:center;color:var(--accent);}
+  .feat h3{font-size:17px;font-weight:700;margin-top:16px;letter-spacing:-0.3px;}
+  .feat p{font-size:13.5px;color:var(--muted);margin-top:7px;line-height:1.6;}
+
+  /* FOOTER VALUES */
+  .values{display:flex;gap:14px;margin-top:16px;}
+  .val{flex:1;background:#15171c;border-radius:16px;padding:22px 24px;color:#fff;}
+  .val .k{font-size:18px;font-weight:800;letter-spacing:-0.3px;}
+  .val .k span{color:#7fd8c9;}
+  .val .s{font-size:12.5px;color:#aeb2ba;margin-top:7px;line-height:1.6;}
+
+  svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;}
+  .fstep svg{width:22px;height:22px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="hero">
+    <div class="accentline"></div><div class="accentline2"></div>
+    <div class="eyebrow">Store Coupon System</div>
+    <h1>방탈출 쿠폰 발행기</h1>
+    <div class="tag">매장에서 쓰는 1회용 쿠폰을 발급하고, 문자로 보내고, 현장에서 사용 처리까지 — 하나의 웹 서비스로 끝냅니다.</div>
+    <div class="badges">
+      <span class="hbadge">앱 설치 불필요</span>
+      <span class="hbadge">웹으로 즉시 사용</span>
+      <span class="hbadge">발송 비용 <b>0원</b></span>
+      <span class="hbadge">1·2·3호점 멀티 매장</span>
+    </div>
+  </div>
+
+  <!-- FLOW -->
+  <div class="flow">
+    <div class="fstep">
+      <div class="ic"><svg viewBox="0 0 24 24"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M8.5 8h7M8.5 12h7M8.5 16h4"/></svg></div>
+      <div class="t">쿠폰 발행</div><div class="d">혜택·조건 설정</div>
+    </div>
+    <div class="arrow"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+    <div class="fstep">
+      <div class="ic"><svg viewBox="0 0 24 24"><path d="M21 4L3 11l7 2.5L13 21l8-17Z"/><path d="M10 13.5L21 4"/></svg></div>
+      <div class="t">문자·링크 전달</div><div class="d">내 폰으로 발송</div>
+    </div>
+    <div class="arrow"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+    <div class="fstep">
+      <div class="ic"><svg viewBox="0 0 24 24"><rect x="7" y="3" width="10" height="18" rx="2.5"/><path d="M11 17.5h2"/></svg></div>
+      <div class="t">고객 QR 수신</div><div class="d">휴대폰에 표시</div>
+    </div>
+    <div class="arrow"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+    <div class="fstep">
+      <div class="ic"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8 12.3l2.5 2.5L16 9.2"/></svg></div>
+      <div class="t">직원 사용 처리</div><div class="d">스캔 후 1회 차감</div>
+    </div>
+  </div>
+
+  <div class="sectit">주요 기능</div>
+  <div class="grid">
+    <div class="feat">
+      <div class="ic"><svg viewBox="0 0 24 24"><path d="M3 8a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v2a2 2 0 0 0 0 4v2a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-2a2 2 0 0 0 0-4V8Z"/><path d="M14.5 6.5v11" stroke-dasharray="2 2.4"/></svg></div>
+      <h3>1회용 보장</h3><p>한 번 쓰면 자동 만료. 캡처·중복 사용을 서버에서 차단하고, 동시 스캔도 단 한 번만 처리됩니다.</p>
+    </div>
+    <div class="feat">
+      <div class="ic"><svg viewBox="0 0 24 24"><path d="M4 10v10h16V10"/><path d="M3 10l1.6-5h14.8L21 10a2.4 2.4 0 0 1-4.8 0 2.4 2.4 0 0 1-4.8 0 2.4 2.4 0 0 1-4.8 0A2.4 2.4 0 0 1 3 10Z"/><path d="M10 20v-5h4v5"/></svg></div>
+      <h3>멀티 매장</h3><p>1·2·3호점을 구분해 운영하고, 어느 호점에서 사용됐는지까지 자동으로 기록합니다.</p>
+    </div>
+    <div class="feat">
+      <div class="ic"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="12" rx="3"/><path d="M8 21l3-4"/></svg></div>
+      <h3>무료 문자 발송</h3><p>번호를 붙여넣으면 고객별 쿠폰을 만들어, 내 폰 문자앱으로 일괄 전송 — 비용이 들지 않습니다.</p>
+    </div>
+    <div class="feat">
+      <div class="ic"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><path d="M3.5 19a5.5 5.5 0 0 1 11 0"/><circle cx="17.5" cy="9" r="2.3"/><path d="M15.5 19a4.6 4.6 0 0 1 6-3.7"/></svg></div>
+      <h3>친구 추천</h3><p>추천 링크로 신규 고객을 유입하고, 친구와 추천인 양쪽에 보상 쿠폰을 자동 발급합니다.</p>
+    </div>
+    <div class="feat">
+      <div class="ic"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg></div>
+      <h3>시간·요일 한정</h3><p>평일 낮처럼 한산한 시간대에만 쓰는 쿠폰으로 빈 방을 채우고 가동률을 높입니다.</p>
+    </div>
+    <div class="feat">
+      <div class="ic"><svg viewBox="0 0 24 24"><circle cx="8" cy="9" r="2.6"/><circle cx="16" cy="9" r="2.6"/><path d="M3 18.5a5 5 0 0 1 10 0M11 18.5a5 5 0 0 1 10 0"/></svg></div>
+      <h3>단체 할인</h3><p>4인 이상 등 인원 조건을 설정해 큰 팀·회식·모임 단위 예약을 유도합니다.</p>
+    </div>
+    <div class="feat">
+      <div class="ic"><svg viewBox="0 0 24 24"><path d="M6 21V4a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v17"/><path d="M4 21h16"/><circle cx="14.5" cy="12" r="1"/></svg></div>
+      <h3>다른 테마 유도</h3><p>이미 플레이한 테마는 제외해, 아직 안 해본 방으로 다시 오게 만드는 재방문 전략입니다.</p>
+    </div>
+    <div class="feat">
+      <div class="ic"><svg viewBox="0 0 24 24"><path d="M12 3.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 17l-5.2 2.6 1-5.8-4.3-4.1 5.9-.9L12 3.5Z"/></svg></div>
+      <h3>리뷰 보상</h3><p>후기 작성을 유도하는 보상 쿠폰으로 리뷰·평점을 쌓아 신규 예약 전환을 높입니다.</p>
+    </div>
+    <div class="feat">
+      <div class="ic"><svg viewBox="0 0 24 24"><path d="M4 4v16h16"/><path d="M7 15l3.2-4 3 2L20 7"/></svg></div>
+      <h3>실시간 현황·취소</h3><p>사용 내역이 실시간으로 표시되고, 잘못 처리한 쿠폰은 관리자가 즉시 되돌릴 수 있습니다.</p>
+    </div>
+  </div>
+
+  <div class="values">
+    <div class="val"><div class="k">발송 비용 <span>0원</span></div><div class="s">카카오·문자 API 과금 없이 직원 폰으로 직접 발송 (문자 무제한 요금제 기준)</div></div>
+    <div class="val"><div class="k">설치 없이 <span>바로</span></div><div class="s">고객·직원 모두 웹 링크와 QR로 사용 — 별도 앱·전용 기기가 필요 없습니다</div></div>
+    <div class="val"><div class="k">방탈출 <span>맞춤</span></div><div class="s">테마·예약·단체·시간대까지 방탈출 운영 방식에 맞춘 쿠폰 전략</div></div>
+  </div>
+
+</div>
+</body>
+</html>

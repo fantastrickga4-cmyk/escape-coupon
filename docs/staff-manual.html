@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<style>
+  *{margin:0;padding:0;box-sizing:border-box;font-family:'Pretendard','Malgun Gothic',sans-serif;}
+  body{background:#fff7e0;width:920px;}
+  .wrap{padding:32px 34px;}
+  .ink{color:#111;}
+  h1{font-size:34px;font-weight:900;}
+  .head{background:#4ad7d4;border:3px solid #111;border-radius:20px;box-shadow:7px 7px 0 #111;padding:22px 26px;margin-bottom:10px;display:flex;align-items:center;gap:16px;}
+  .head .emoji{font-size:44px;}
+  .head .sub{font-weight:700;margin-top:4px;font-size:15px;}
+  .pill{display:inline-block;background:#ffd23f;border:2px solid #111;border-radius:20px;padding:4px 12px;font-weight:800;font-size:13px;margin-top:8px;}
+  .steps{display:flex;flex-direction:column;gap:16px;margin-top:20px;}
+  .step{background:#fff;border:3px solid #111;border-radius:18px;box-shadow:6px 6px 0 #111;padding:18px 20px;display:flex;gap:16px;}
+  .num{flex-shrink:0;width:44px;height:44px;border-radius:12px;background:#ff5d8f;color:#fff;border:2px solid #111;font-size:22px;font-weight:900;display:flex;align-items:center;justify-content:center;box-shadow:3px 3px 0 #111;}
+  .st-body{flex:1;}
+  .st-title{font-size:19px;font-weight:900;}
+  .st-desc{font-size:15px;font-weight:600;color:#333;margin-top:5px;line-height:1.55;}
+  .chip{display:inline-block;border:2px solid #111;border-radius:8px;padding:2px 9px;font-weight:800;font-size:13px;margin:3px 4px 0 0;}
+  .c-pink{background:#ff5d8f;color:#fff;}.c-teal{background:#4ad7d4;}.c-yellow{background:#ffd23f;}.c-dark{background:#111;color:#fff;}.c-white{background:#fff;}
+  .note{background:#ffd23f;border:3px solid #111;border-radius:18px;box-shadow:6px 6px 0 #111;padding:18px 22px;margin-top:20px;}
+  .note b{font-size:17px;font-weight:900;}
+  .note ul{margin:8px 0 0 20px;}
+  .note li{font-weight:700;font-size:15px;margin-top:5px;}
+  .ok{color:#0a8a4a;}.no{color:#c81e3a;}
+</style>
+</head>
+<body>
+<div class="wrap ink">
+  <div class="head">
+    <div class="emoji">🔓</div>
+    <div>
+      <h1>직원용 사용 설명서</h1>
+      <div class="sub">방탈출 쿠폰 — 고객 쿠폰을 “사용 처리”하는 방법</div>
+      <span class="pill">비밀번호 없음 · 호점만 선택하면 시작</span>
+    </div>
+  </div>
+
+  <div class="steps">
+    <div class="step">
+      <div class="num">1</div>
+      <div class="st-body">
+        <div class="st-title">호점 선택하고 입장</div>
+        <div class="st-desc">직원 화면에서 우리 매장을 누르고 <span class="chip c-teal">들어가기</span> — 선택한 호점으로 사용 기록이 남습니다.
+        <br><span class="chip c-white">1호점</span><span class="chip c-white">2호점</span><span class="chip c-white">3호점</span></div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="num">2</div>
+      <div class="st-body">
+        <div class="st-title">QR 스캔하기</div>
+        <div class="st-desc"><span class="chip c-teal">카메라로 스캔 시작</span>을 누르고, 고객 휴대폰의 쿠폰 QR을 비추면 자동 인식됩니다.</div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="num">3</div>
+      <div class="st-body">
+        <div class="st-title">QR이 안 되면 코드 직접 입력</div>
+        <div class="st-desc">화면 맨 아래 입력칸에 쿠폰 코드를 입력하고 <span class="chip c-dark">확인</span>. (카메라 권한이 없거나 화면이 어두울 때)</div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="num">4</div>
+      <div class="st-body">
+        <div class="st-title">추가 정보가 뜨면 입력</div>
+        <div class="st-desc">쿠폰 종류에 따라 입력창이 나옵니다 → 입력 후 <span class="chip c-pink">사용 처리하기</span>
+        <br>• <b>인원수</b> : 단체 할인 쿠폰(예: 4인 이상)일 때 인원 입력
+        <br>• <b>플레이 테마</b> : “다른 테마 유도” 쿠폰일 때 이번에 하는 테마 선택</div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="num">5</div>
+      <div class="st-body">
+        <div class="st-title">결과 확인</div>
+        <div class="st-desc"><span class="ok">✓ 사용 처리 완료</span> = 혜택 제공 OK / <span class="no">✕ 거부</span> = 사용 불가
+        <br>거부 사유 예시: <span class="chip c-white">이미 사용됨</span><span class="chip c-white">유효기간 만료</span><span class="chip c-white">시간·요일 제한</span><span class="chip c-white">최소 인원 미달</span><span class="chip c-white">이미 플레이한 테마</span></div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="num">6</div>
+      <div class="st-body">
+        <div class="st-title">다음 손님</div>
+        <div class="st-desc"><span class="chip c-dark">다음 쿠폰 스캔</span>을 누르면 바로 다음 고객을 처리할 수 있습니다.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="note">
+    <b>⚠️ 꼭 기억하세요</b>
+    <ul>
+      <li>모든 쿠폰은 <b>1회용</b> — 한 번 사용 처리하면 다시 못 씁니다.</li>
+      <li>실수로 처리했다면 <b>관리자에게 “사용 취소”를 요청</b>하세요 (대시보드에서 되돌릴 수 있어요).</li>
+      <li>같은 QR을 두 번 찍어도 <b>딱 한 번만</b> 처리됩니다 (걱정 마세요).</li>
+    </ul>
+  </div>
+</div>
+</body>
+</html>
