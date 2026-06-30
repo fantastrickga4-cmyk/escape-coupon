@@ -2,6 +2,7 @@ import Link from "next/link";
 import { prisma } from "@/lib/db";
 import { requireAuth } from "@/lib/auth";
 import { STORES } from "@/lib/coupon";
+import { fmtKSTDateTime } from "@/lib/restrict";
 import { adminLogout, cancelRedemption } from "./actions";
 import CampaignForm from "./CampaignForm";
 import AutoRefresh from "./AutoRefresh";
@@ -40,8 +41,7 @@ export default async function AdminDashboard() {
   const storeCount = (id: number) =>
     byStore.find((s) => s.storeId === id)?._count ?? 0;
 
-  const timeFmt = (d: Date | null) =>
-    d ? new Date(d).toLocaleString("ko-KR", { month: "numeric", day: "numeric", hour: "2-digit", minute: "2-digit" }) : "";
+  const timeFmt = fmtKSTDateTime;
 
   return (
     <main className="min-h-screen bg-[#fff7e0] p-6">

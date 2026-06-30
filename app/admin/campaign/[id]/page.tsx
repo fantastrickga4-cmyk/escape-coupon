@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { prisma } from "@/lib/db";
 import { requireAuth } from "@/lib/auth";
 import { couponUrl } from "@/lib/coupon";
+import { fmtKSTDateTime } from "@/lib/restrict";
 import { deleteCampaign } from "../../actions";
 import CopyBox from "./CopyBox";
 import RefreshButton from "./RefreshButton";
@@ -28,11 +29,6 @@ export default async function CampaignDetail({
   const sent = campaign.coupons.filter((c) => c.sentTo).length;
   const viewed = campaign.coupons.filter((c) => c.viewedAt).length;
   const redeemed = campaign.coupons.filter((c) => c.status === "redeemed").length;
-
-  const timeFmt = (d: Date | null) =>
-    d
-      ? new Date(d).toLocaleString("ko-KR", { month: "numeric", day: "numeric", hour: "2-digit", minute: "2-digit" })
-      : "";
 
   return (
     <main className="min-h-screen bg-[#fff7e0] p-6">
@@ -97,7 +93,7 @@ export default async function CampaignDetail({
                   {/* 열람 여부 */}
                   {c.viewedAt ? (
                     <span className="nb-tag bg-[#4ad7d4]" title={`${c.viewCount}회 열람`}>
-                      👁 열람 {timeFmt(c.viewedAt)}
+                      👁 열람 {fmtKSTDateTime(c.viewedAt)}
                     </span>
                   ) : (
                     <span className="nb-tag bg-white text-slate-400">미열람</span>

@@ -1,6 +1,18 @@
 // 쿠폰 사용 제약(시간·요일) 검증 + 표시 텍스트
 export const DAY_LABELS = ["일", "월", "화", "수", "목", "금", "토"];
 
+// 화면 표시용 KST 날짜·시각 포맷 (서버가 UTC여도 한국시간으로 표시)
+export function fmtKSTDateTime(d: Date | string | null | undefined) {
+  if (!d) return "";
+  return new Date(d).toLocaleString("ko-KR", {
+    timeZone: "Asia/Seoul",
+    month: "numeric",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+}
+
 // 서버 타임존과 무관하게 한국시간(KST) 기준 요일·시각
 export function kstNow() {
   const now = new Date();
