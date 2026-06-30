@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/db";
-import { newToken } from "@/lib/coupon";
+import { newToken, newCodeBatch } from "@/lib/coupon";
 import { checkPassword, setSession, clearSession, isAuthed } from "@/lib/auth";
 
 export async function adminLogin(_prev: unknown, formData: FormData) {
@@ -60,14 +60,26 @@ export async function createCampaign(_prev: unknown, formData: FormData) {
     },
   });
 
-  // 미리 발급할 수량만큼 고유 토큰 쿠폰 생성 (0이면 생성 안 함)
+  // 미리 발급할 수량만큼 고유 토큰 + 짧은 코드 쿠폰 생성 (0이면 생성 안 함)
+  // 코드 충돌(P2002)은 극히 드물지만, 발생 시 코드를 새로 뽑아 재시도한다.
   if (quantity > 0) {
-    const coupons = Array.from({ length: quantity }, () => ({
-      id: newToken(),
-      campaignId: campaign.id,
-      expiresAt,
-    }));
-    await prisma.coupon.createMany({ data: coupons });
+    for (let attempt = 0; ; attempt++) {
+      const codes = newCodeBatch(quantity);
+      const coupons = Array.from({ length: quantity }, (_, i) => ({
+        id: newToken(),
+        code: codes[i],
+        campaignId: campaign.id,
+        expiresAt,
+      }));
+      try {
+        await prisma.coupon.createMany({ data: coupons });
+        break;
+      } catch (e) {
+        const isDup = (e as { code?: string })?.code === "P2002";
+        if (isDup && attempt < 4) continue;
+        throw e;
+      }
+    }
   }
 
   revalidatePath("/admin");

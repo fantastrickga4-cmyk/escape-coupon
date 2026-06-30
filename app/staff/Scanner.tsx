@@ -201,7 +201,7 @@ export default function Scanner() {
         <input
           value={manual}
           onChange={(e) => setManual(e.target.value)}
-          placeholder="QR이 안 될 때: 코드 직접 입력"
+          placeholder="QR이 안 될 때: 코드 6자리 입력 (예: ABC123)"
           className="nb-input flex-1 text-sm"
         />
         <button className="nb-btn nb-btn-sm nb-btn-dark">확인</button>

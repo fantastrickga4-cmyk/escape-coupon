@@ -14,7 +14,8 @@ export async function POST(request: Request) {
   }
 
   const body = await request.json().catch(() => ({}));
-  const token = extractToken(String(body.token ?? ""));
+  const raw = String(body.token ?? "");
+  const token = extractToken(raw);
   const people: number | null = body.people != null ? Number(body.people) : null;
   const theme: string | null = body.theme ? String(body.theme) : null;
 
@@ -22,10 +23,20 @@ export async function POST(request: Request) {
     return NextResponse.json({ ok: false, message: "잘못된 코드입니다." }, { status: 400 });
   }
 
-  const coupon = await prisma.coupon.findUnique({
+  // QR/링크면 토큰(id)으로, 직원이 손으로 친 짧은 코드면 code로 조회
+  let coupon = await prisma.coupon.findUnique({
     where: { id: token },
     include: { campaign: true, store: true },
   });
+  if (!coupon) {
+    const code = raw.trim().toUpperCase().replace(/[^A-Z0-9]/g, "");
+    if (code) {
+      coupon = await prisma.coupon.findUnique({
+        where: { code },
+        include: { campaign: true, store: true },
+      });
+    }
+  }
 
   if (!coupon) {
     return NextResponse.json({ ok: false, message: "존재하지 않는 쿠폰입니다." });
@@ -86,7 +97,7 @@ export async function POST(request: Request) {
 
   // 원자적 사용 처리 — status가 'issued'인 경우에만 갱신(동시 스캔 방어)
   const result = await prisma.coupon.updateMany({
-    where: { id: token, status: "issued" },
+    where: { id: coupon.id, status: "issued" },
     data: {
       status: "redeemed",
       redeemedAt: new Date(),

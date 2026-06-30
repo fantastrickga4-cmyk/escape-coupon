@@ -1,7 +1,7 @@
 "use server";
 
 import { prisma } from "@/lib/db";
-import { newToken, couponUrl } from "@/lib/coupon";
+import { newToken, uniqueCode, couponUrl } from "@/lib/coupon";
 import { isAuthed } from "@/lib/auth";
 
 export type SendRow = { phone: string; token: string; link: string; message: string };
@@ -39,7 +39,7 @@ export async function prepareBatch(_prev: unknown, formData: FormData): Promise<
     });
     if (!coupon) {
       coupon = await prisma.coupon.create({
-        data: { id: newToken(), campaignId, expiresAt: campaign.expiresAt, sentTo: phone, excludeTheme },
+        data: { id: newToken(), code: await uniqueCode(), campaignId, expiresAt: campaign.expiresAt, sentTo: phone, excludeTheme },
       });
     }
     const link = couponUrl(coupon.id);

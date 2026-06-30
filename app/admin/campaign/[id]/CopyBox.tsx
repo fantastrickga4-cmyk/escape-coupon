@@ -1,15 +1,16 @@
 "use client";
 
 import { useState } from "react";
+import { copyText } from "@/lib/clipboard";
 
 export default function CopyBox({ links }: { links: string[] }) {
-  const [copied, setCopied] = useState(false);
+  const [copied, setCopied] = useState<"ok" | "fail" | null>(null);
   const text = links.join("\n");
 
   async function copy() {
-    await navigator.clipboard.writeText(text);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 1500);
+    const ok = await copyText(text);
+    setCopied(ok ? "ok" : "fail");
+    setTimeout(() => setCopied(null), 1500);
   }
 
   return (
@@ -20,7 +21,7 @@ export default function CopyBox({ links }: { links: string[] }) {
           onClick={copy}
           className="nb-btn nb-btn-sm nb-btn-dark"
         >
-          {copied ? "복사됨!" : "전체 복사"}
+          {copied === "ok" ? "복사됨!" : copied === "fail" ? "복사 실패" : "전체 복사"}
         </button>
       </div>
       <textarea

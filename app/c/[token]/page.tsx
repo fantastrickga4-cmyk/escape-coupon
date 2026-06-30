@@ -65,6 +65,14 @@ export default async function CouponPage({
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src={qr} alt="쿠폰 QR" className="w-56 h-56" />
               <p className="text-sm font-bold text-black text-center">매장 직원에게 이 QR을 보여주세요.</p>
+              {coupon.code && (
+                <div className="w-full nb-card-sm py-3 text-center">
+                  <p className="text-xs font-bold text-slate-500">QR이 안 될 때 직원에게 코드를 불러주세요</p>
+                  <p className="mt-1 text-3xl font-extrabold tracking-[0.3em] text-black font-mono">
+                    {coupon.code}
+                  </p>
+                </div>
+              )}
             </>
           )}
 

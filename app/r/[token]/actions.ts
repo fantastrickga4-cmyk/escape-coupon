@@ -1,7 +1,7 @@
 "use server";
 
 import { prisma } from "@/lib/db";
-import { newToken, couponUrl } from "@/lib/coupon";
+import { newToken, uniqueCode, couponUrl } from "@/lib/coupon";
 
 // 친구(추천받은 사람)가 전화번호 입력 → 양측 쿠폰 발급
 export async function acceptReferral(_prev: unknown, formData: FormData) {
@@ -25,6 +25,7 @@ export async function acceptReferral(_prev: unknown, formData: FormData) {
   const refereeCoupon = await prisma.coupon.create({
     data: {
       id: newToken(),
+      code: await uniqueCode(),
       campaignId: campaign.id,
       expiresAt: campaign.expiresAt,
       sentTo: refereePhone,
@@ -36,6 +37,7 @@ export async function acceptReferral(_prev: unknown, formData: FormData) {
     await prisma.coupon.create({
       data: {
         id: newToken(),
+        code: await uniqueCode(),
         campaignId: campaign.id,
         expiresAt: campaign.expiresAt,
         sentTo: referral.referrerPhone,

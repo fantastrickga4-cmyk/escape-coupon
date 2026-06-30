@@ -1,6 +1,7 @@
 "use client";
 
 import { useActionState, useEffect, useState } from "react";
+import { copyText } from "@/lib/clipboard";
 import { prepareBatch, type SendResult, type SendRow } from "./actions";
 
 type Campaign = { id: string; name: string; benefit: string };
@@ -102,11 +103,11 @@ export default function BatchSender({ campaigns, themes }: { campaigns: Campaign
 }
 
 function Row({ row, href }: { row: SendRow; href: string }) {
-  const [copied, setCopied] = useState(false);
+  const [copied, setCopied] = useState<"ok" | "fail" | null>(null);
   async function copy() {
-    await navigator.clipboard.writeText(row.message);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 1500);
+    const ok = await copyText(row.message);
+    setCopied(ok ? "ok" : "fail");
+    setTimeout(() => setCopied(null), 1500);
   }
   return (
     <div className="nb-card-sm flex items-center gap-2 p-3">
@@ -118,7 +119,7 @@ function Row({ row, href }: { row: SendRow; href: string }) {
         onClick={copy}
         className="nb-btn nb-btn-sm nb-btn-yellow shrink-0"
       >
-        {copied ? "복사됨" : "복사"}
+        {copied === "ok" ? "복사됨" : copied === "fail" ? "복사 실패" : "복사"}
       </button>
       <a
         href={href}
