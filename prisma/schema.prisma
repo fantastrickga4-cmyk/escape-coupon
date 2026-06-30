@@ -64,6 +64,10 @@ model Coupon {
   benefitOverride String? // 개별 혜택 덮어쓰기 (예: 추천인 보상)
   excludeTheme    String? // 기능5: 이 테마에선 사용 불가(이미 플레이한 테마)
 
+  // 열람 추적 — 받는 사람이 쿠폰 링크를 열어봤는지 (관리자/직원 본인 조회는 제외)
+  viewedAt  DateTime? // 최초 열람 시각
+  viewCount Int       @default(0) // 열람 횟수
+
   // 사용 처리 기록
   redeemedAt     DateTime?
   storeId        Int? // 사용된 호점

@@ -2,6 +2,7 @@ import QRCode from "qrcode";
 import { prisma } from "@/lib/db";
 import { couponUrl } from "@/lib/coupon";
 import { restrictionText } from "@/lib/restrict";
+import { isAuthed } from "@/lib/auth";
 
 export const dynamic = "force-dynamic";
 
@@ -23,6 +24,17 @@ export default async function CouponPage({
         <p className="font-bold text-black">존재하지 않는 쿠폰입니다.</p>
       </Centered>
     );
+  }
+
+  // 열람 기록 — 받는 사람이 링크를 열었을 때만(관리자/직원 본인 미리보기는 제외)
+  const internal = (await isAuthed("admin")) || (await isAuthed("staff"));
+  if (!internal) {
+    await prisma.coupon
+      .update({
+        where: { id: coupon.id },
+        data: { viewCount: { increment: 1 }, viewedAt: coupon.viewedAt ?? new Date() },
+      })
+      .catch(() => {});
   }
 
   const expired = coupon.expiresAt != null && new Date(coupon.expiresAt) < new Date();

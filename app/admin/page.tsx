@@ -23,7 +23,10 @@ export default async function AdminDashboard() {
       orderBy: { createdAt: "desc" },
       include: {
         _count: { select: { coupons: true } },
-        coupons: { where: { status: "redeemed" }, select: { id: true } },
+        coupons: {
+          where: { OR: [{ status: "redeemed" }, { NOT: { viewedAt: null } }] },
+          select: { status: true, viewedAt: true },
+        },
       },
     }),
     prisma.coupon.findMany({
@@ -126,30 +129,34 @@ export default async function AdminDashboard() {
           {campaigns.length === 0 && (
             <p className="text-sm text-slate-500">아직 발행한 캠페인이 없습니다.</p>
           )}
-          {campaigns.map((c) => (
-            <Link
-              key={c.id}
-              href={`/admin/campaign/${c.id}`}
-              className="nb-card-sm block p-4 transition hover:-translate-y-0.5"
-            >
-              <div className="flex items-center justify-between">
-                <div>
-                  <div className="font-extrabold text-[#111]">{c.name}</div>
-                  <div className="text-sm text-slate-600">{c.benefit}</div>
-                </div>
-                <div className="text-right text-sm">
-                  <div className="text-[#111] font-bold">
-                    {c.coupons.length} / {c._count.coupons} 사용
+          {campaigns.map((c) => {
+            const viewedCount = c.coupons.filter((x) => x.viewedAt).length;
+            const redeemedCount = c.coupons.filter((x) => x.status === "redeemed").length;
+            return (
+              <Link
+                key={c.id}
+                href={`/admin/campaign/${c.id}`}
+                className="nb-card-sm block p-4 transition hover:-translate-y-0.5"
+              >
+                <div className="flex items-center justify-between">
+                  <div>
+                    <div className="font-extrabold text-[#111]">{c.name}</div>
+                    <div className="text-sm text-slate-600">{c.benefit}</div>
                   </div>
-                  <div className="text-slate-500">
-                    {c.expiresAt
-                      ? `~${new Date(c.expiresAt).toLocaleDateString("ko-KR")}`
-                      : "무기한"}
+                  <div className="text-right text-sm">
+                    <div className="text-[#111] font-bold">
+                      👁 {viewedCount} · 사용 {redeemedCount}/{c._count.coupons}
+                    </div>
+                    <div className="text-slate-500">
+                      {c.expiresAt
+                        ? `~${new Date(c.expiresAt).toLocaleDateString("ko-KR")}`
+                        : "무기한"}
+                    </div>
                   </div>
                 </div>
-              </div>
-            </Link>
-          ))}
+              </Link>
+            );
+          })}
         </section>
       </div>
     </main>
