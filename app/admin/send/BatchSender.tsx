@@ -9,10 +9,17 @@ type Campaign = { id: string; name: string; benefit: string };
 export default function BatchSender({ campaigns, themes }: { campaigns: Campaign[]; themes: string[] }) {
   const [state, action, pending] = useActionState<SendResult, FormData>(prepareBatch, {});
   const [isIOS, setIsIOS] = useState(false);
+  const [idx, setIdx] = useState(0); // 일괄발송 진행 위치(다음 보낼 사람)
+  const rows = state?.rows ?? [];
 
   useEffect(() => {
     setIsIOS(/iPhone|iPad|iPod/.test(navigator.userAgent));
   }, []);
+
+  // 새 발송 목록이 만들어지면 진행 위치 초기화
+  useEffect(() => {
+    setIdx(0);
+  }, [state]);
 
   // 플랫폼별 SMS 딥링크 (iOS는 &body=, Android는 ?body=)
   function smsHref(phone: string, message: string) {
@@ -82,19 +89,48 @@ export default function BatchSender({ campaigns, themes }: { campaigns: Campaign
         </button>
       </form>
 
-      {state?.rows && state.rows.length > 0 && (
+      {rows.length > 0 && (
         <section className="nb-card p-6 space-y-3">
           <h2 className="font-extrabold text-black">
-            발송 목록 (<span className="font-extrabold">{state.rows.length}</span>명) — 버튼을 눌러 보내세요
+            발송 목록 (<span className="font-extrabold">{rows.length}</span>명)
           </h2>
-          <div className="space-y-2">
-            {state.rows.map((r) => (
-              <Row key={r.token} row={r} href={smsHref(r.phone, r.message)} />
+
+          {/* 일괄발송 — 누를 때마다 다음 사람 문자앱이 자동으로 열림 */}
+          {idx < rows.length ? (
+            <a
+              href={smsHref(rows[idx].phone, rows[idx].message)}
+              onClick={() => setIdx((i) => i + 1)}
+              className="nb-btn nb-btn-primary w-full"
+            >
+              📨 일괄발송 — {idx + 1}/{rows.length} · {formatPhone(rows[idx].phone)}에게 보내기
+            </a>
+          ) : (
+            <div className="w-full text-center border-2 border-black rounded-xl bg-[#4ad7d4] py-3 font-extrabold text-black">
+              ✅ {rows.length}명 전체 발송 완료
+            </div>
+          )}
+          <p className="text-xs text-slate-600">
+            버튼을 누르면 문자앱이 채워진 채 열립니다. 전송 후 돌아와 같은 버튼을 다시 누르면 다음 사람으로 넘어가요.
+            {idx > 0 && (
+              <button type="button" onClick={() => setIdx(0)} className="ml-1 underline font-bold">
+                처음부터
+              </button>
+            )}
+          </p>
+
+          <div className="space-y-2 pt-1">
+            {rows.map((r, i) => (
+              <Row
+                key={r.token}
+                row={r}
+                href={smsHref(r.phone, r.message)}
+                done={i < idx}
+                current={i === idx}
+              />
             ))}
           </div>
           <p className="text-xs text-slate-600 pt-2">
-            ※ 휴대폰에서 이 화면을 열고 [문자 보내기]를 누르면 문자앱이 내용까지 채워진 채로 열립니다.
-            전송만 누르면 됩니다. PC에서는 [복사]로 내용을 복사해 사용하세요.
+            ※ 개별로 보내려면 각 줄의 [문자 보내기]를 누르세요. PC에서는 [복사]로 내용을 복사해 사용하세요.
           </p>
         </section>
       )}
@@ -102,7 +138,7 @@ export default function BatchSender({ campaigns, themes }: { campaigns: Campaign
   );
 }
 
-function Row({ row, href }: { row: SendRow; href: string }) {
+function Row({ row, href, done, current }: { row: SendRow; href: string; done?: boolean; current?: boolean }) {
   const [copied, setCopied] = useState<"ok" | "fail" | null>(null);
   async function copy() {
     const ok = await copyText(row.message);
@@ -110,9 +146,16 @@ function Row({ row, href }: { row: SendRow; href: string }) {
     setTimeout(() => setCopied(null), 1500);
   }
   return (
-    <div className="nb-card-sm flex items-center gap-2 p-3">
+    <div
+      className={`nb-card-sm flex items-center gap-2 p-3 ${done ? "opacity-50" : ""} ${
+        current ? "border-[#ff5d8f]" : ""
+      }`}
+    >
       <div className="flex-1 min-w-0">
-        <div className="font-extrabold text-black">{formatPhone(row.phone)}</div>
+        <div className="font-extrabold text-black">
+          {done ? "✓ " : ""}
+          {formatPhone(row.phone)}
+        </div>
         <div className="text-xs text-slate-500 truncate">{row.link}</div>
       </div>
       <button
