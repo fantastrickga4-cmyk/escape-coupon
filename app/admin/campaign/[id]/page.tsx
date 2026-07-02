@@ -4,7 +4,7 @@ import { prisma } from "@/lib/db";
 import { requireAuth } from "@/lib/auth";
 import { couponUrl } from "@/lib/coupon";
 import { fmtKSTDateTime } from "@/lib/restrict";
-import { deleteCampaign } from "../../actions";
+import { deleteCampaign, updateExpiry } from "../../actions";
 import CopyBox from "./CopyBox";
 import RefreshButton from "./RefreshButton";
 
@@ -54,6 +54,20 @@ export default async function CampaignDetail({
               <button className="nb-btn nb-btn-sm nb-btn-white font-bold text-red-600">캠페인 삭제</button>
             </form>
           </div>
+
+          {/* 발행된 쿠폰 전체의 유효기간 일괄 변경 */}
+          <form action={updateExpiry} className="mt-4 flex flex-wrap items-center gap-2 border-t-2 border-black/10 pt-4">
+            <input type="hidden" name="id" value={campaign.id} />
+            <label className="text-sm font-bold text-slate-600">유효기간 변경</label>
+            <input
+              type="date"
+              name="expiresAt"
+              defaultValue={toDateInput(campaign.expiresAt)}
+              className="nb-input px-3 py-1.5 text-sm"
+            />
+            <button className="nb-btn nb-btn-sm nb-btn-white font-bold">적용</button>
+            <span className="text-xs text-slate-400">비우고 적용하면 무기한 · 발행된 쿠폰 {total}장에 모두 반영</span>
+          </form>
         </header>
 
         {/* 발송 → 열람 → 사용 현황 한눈에 */}
@@ -112,6 +126,17 @@ export default async function CampaignDetail({
       </div>
     </main>
   );
+}
+
+// 저장된 만료일(서버 UTC 기준 23:59:59)을 date input용 YYYY-MM-DD로 되돌린다.
+// updateExpiry/createCampaign이 `raw + "T23:59:59"`로 만들므로 UTC 파트로 뽑아야 값이 왕복 일치한다.
+function toDateInput(d: Date | null | undefined) {
+  if (!d) return "";
+  const dt = new Date(d);
+  const y = dt.getUTCFullYear();
+  const m = String(dt.getUTCMonth() + 1).padStart(2, "0");
+  const day = String(dt.getUTCDate()).padStart(2, "0");
+  return `${y}-${m}-${day}`;
 }
 
 function Funnel({

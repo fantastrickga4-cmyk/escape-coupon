@@ -113,6 +113,25 @@ export async function cancelRedemption(formData: FormData) {
   revalidatePath("/admin");
 }
 
+// 발행된 쿠폰 유효기간 일괄 변경 — 캠페인 만료일과 소속 쿠폰 전체의 만료일을 함께 갱신
+export async function updateExpiry(formData: FormData) {
+  if (!(await isAuthed("admin"))) return;
+  const id = String(formData.get("id") ?? "");
+  const raw = String(formData.get("expiresAt") ?? "").trim();
+  if (!id) return;
+
+  // 빈 값이면 무기한(null), 아니면 그 날짜 23:59:59까지 (캠페인 생성과 동일 규칙)
+  const expiresAt = raw ? new Date(raw + "T23:59:59") : null;
+
+  await prisma.$transaction([
+    prisma.campaign.update({ where: { id }, data: { expiresAt } }),
+    prisma.coupon.updateMany({ where: { campaignId: id }, data: { expiresAt } }),
+  ]);
+
+  revalidatePath(`/admin/campaign/${id}`);
+  revalidatePath("/admin");
+}
+
 export async function deleteCampaign(formData: FormData) {
   if (!(await isAuthed("admin"))) return;
   const id = String(formData.get("id") ?? "");
