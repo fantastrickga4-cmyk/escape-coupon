@@ -2,19 +2,11 @@
 
 import { prisma } from "@/lib/db";
 import { newToken, uniqueCode, couponUrl } from "@/lib/coupon";
+import { parsePhones } from "@/lib/phone";
 import { isAuthed } from "@/lib/auth";
 
 export type SendRow = { phone: string; token: string; link: string; message: string };
 export type SendResult = { error?: string; greeting?: string; rows?: SendRow[] };
-
-// "010-1234-5678", "01012345678", 줄바꿈/쉼표/공백 혼합 입력을 번호 배열로 정리
-function parsePhones(raw: string): string[] {
-  const parts = raw
-    .split(/[\s,;]+/)
-    .map((p) => p.replace(/[^0-9]/g, ""))
-    .filter((p) => p.length >= 9 && p.length <= 11);
-  return Array.from(new Set(parts)); // 중복 제거
-}
 
 export async function prepareBatch(_prev: unknown, formData: FormData): Promise<SendResult> {
   if (!(await isAuthed("admin"))) return { error: "인증이 필요합니다." };

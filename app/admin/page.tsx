@@ -22,6 +22,9 @@ export default async function AdminDashboard() {
     }),
     prisma.campaign.findMany({
       orderBy: { createdAt: "desc" },
+      // 주 2종씩 쌓이므로 상한을 둔다. 보관 정책(만료 후 4주 삭제) 기준 살아있는 캠페인이
+      // 최대 20개 안팎이라 24면 전부 보이고, 정책이 없어도 목록·쿼리가 무한히 늘지 않는다.
+      take: 24,
       include: {
         _count: { select: { coupons: true } },
         coupons: {
