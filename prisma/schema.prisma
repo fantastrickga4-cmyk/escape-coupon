@@ -28,6 +28,7 @@ model Campaign {
   id      String  @id @default(cuid())
   name    String // 관리용 이름 — 주차·종류가 드러나야 목록에서 구분된다
   title   String? // 고객 쿠폰 화면에 보이는 제목 (없으면 name을 그대로 노출)
+  notice  String? // 고객 쿠폰 화면 하단 안내 (수령처·기한 주의 등). 줄바꿈으로 여러 줄.
   benefit String // 혜택 내용 (예: "다른 테마 20% 할인")
   kind    String  @default("normal") // normal | review | referral
 

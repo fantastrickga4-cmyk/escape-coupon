@@ -34,6 +34,9 @@ const DISCOUNT_TEXT = "판타스트릭 테마 중 택1 5,000원 할인";
 export const PICKUP_NOTICE = "키링은 FANTASTRICK TGC점에서 수령 가능합니다.";
 export const EXPIRY_NOTICE = "쿠폰 사용기한은 1달입니다 기한을 꼭 확인해주세요!";
 
+// 고객 쿠폰 화면(/c/[token]) 하단에 띄울 안내. 화면엔 유효기간이 따로 표시되므로 날짜는 넣지 않는다.
+export const WEEKLY_NOTICE = `${PICKUP_NOTICE}\n${EXPIRY_NOTICE}`;
+
 // 쿠폰 사용기한 — 발급일로부터 1개월
 export const VALID_MONTHS = 1;
 

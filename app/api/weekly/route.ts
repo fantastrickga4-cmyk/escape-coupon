@@ -18,6 +18,7 @@ import { normalizePhones } from "@/lib/phone";
 import {
   WEEKLY_PRESETS,
   WEEKLY_TITLE,
+  WEEKLY_NOTICE,
   RETENTION_WEEKS,
   buildMessage,
   campaignName,
@@ -159,15 +160,26 @@ export async function POST(request: Request) {
     const name = campaignName(preset, week);
     const found = await prisma.campaign.findFirst({ where: { name } });
     if (found) {
-      // 예전에 만들어져 title이 비어 있으면 채워준다(고객 화면에 관리용 이름이 노출되지 않도록)
-      if (found.title !== WEEKLY_TITLE) {
-        await prisma.campaign.update({ where: { id: found.id }, data: { title: WEEKLY_TITLE } });
+      // 예전에 만들어져 제목·안내가 비었거나 문구가 바뀌었으면 갱신한다
+      // (고객 화면에 관리용 이름이 노출되거나 옛 안내가 남지 않도록)
+      if (found.title !== WEEKLY_TITLE || found.notice !== WEEKLY_NOTICE) {
+        await prisma.campaign.update({
+          where: { id: found.id },
+          data: { title: WEEKLY_TITLE, notice: WEEKLY_NOTICE },
+        });
       }
       campaigns.set(preset.key, { preset, id: found.id, name, expiresAt: found.expiresAt, created: false });
       continue;
     }
     const made = await prisma.campaign.create({
-      data: { name, title: WEEKLY_TITLE, benefit: preset.benefit, kind: "normal", expiresAt: expiryFrom(now) },
+      data: {
+        name,
+        title: WEEKLY_TITLE,
+        notice: WEEKLY_NOTICE,
+        benefit: preset.benefit,
+        kind: "normal",
+        expiresAt: expiryFrom(now),
+      },
     });
     campaigns.set(preset.key, { preset, id: made.id, name, expiresAt: made.expiresAt, created: true });
   }

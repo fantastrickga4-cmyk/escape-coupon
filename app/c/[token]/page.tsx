@@ -96,6 +96,17 @@ export default async function CouponPage({
           )}
           {!used && expired && <Badge color="bg-[#ff5d8f] text-black">유효기간이 만료되었습니다</Badge>}
 
+          {/* 캠페인별 안내 — 수령처·기한 주의 등. 문자에만 있으면 링크를 다시 연 고객이 못 본다. */}
+          {coupon.campaign.notice && (
+            <div className="w-full nb-card-sm p-3 space-y-1">
+              {coupon.campaign.notice.split("\n").map((line, i) => (
+                <p key={i} className="text-xs font-bold text-slate-700 leading-relaxed">
+                  ※ {line}
+                </p>
+              ))}
+            </div>
+          )}
+
           <div className="w-full border-t-2 border-dashed border-black pt-4 text-center">
             <p className="text-xs font-bold text-black">
               {coupon.expiresAt
