@@ -5,6 +5,7 @@ import { requireAuth } from "@/lib/auth";
 import { couponUrl } from "@/lib/coupon";
 import { fmtKSTDateTime } from "@/lib/restrict";
 import { deleteCampaign, updateExpiry } from "../../actions";
+import AddCoupons from "./AddCoupons";
 import CopyBox from "./CopyBox";
 import RefreshButton from "./RefreshButton";
 
@@ -100,6 +101,8 @@ export default async function CampaignDetail({
             </Link>
           )}
         </section>
+
+        <AddCoupons id={campaign.id} />
 
         <section className="nb-card p-6">
           <CopyBox links={links} />
