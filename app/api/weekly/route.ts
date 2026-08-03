@@ -12,7 +12,7 @@ import { NextResponse } from "next/server";
 import { timingSafeEqual } from "crypto";
 import { prisma } from "@/lib/db";
 import { newToken, uniqueCode, couponUrl } from "@/lib/coupon";
-import { parsePhones } from "@/lib/phone";
+import { normalizePhones, parsePhones } from "@/lib/phone";
 import {
   WEEKLY_PRESETS,
   WEEKLY_HEADLINE,
@@ -54,8 +54,10 @@ export async function POST(request: Request) {
   }
 
   const body = await request.json().catch(() => ({}));
-  const raw = Array.isArray(body.phones) ? body.phones.join(" ") : String(body.phones ?? "");
-  const phones = parsePhones(raw);
+  // 배열이면 원소 하나가 번호 하나 — "010 9897 6928"처럼 안에 공백이 있어도 쪼개면 안 된다.
+  const phones = Array.isArray(body.phones)
+    ? normalizePhones(body.phones.map(String))
+    : parsePhones(String(body.phones ?? ""));
   const greeting = String(body.greeting ?? "").trim();
   const dryRun = body.dryRun === true;
 
