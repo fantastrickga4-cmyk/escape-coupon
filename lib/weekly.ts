@@ -30,6 +30,10 @@ export const WEEKLY_TITLE = "FANTASTRICK 리뷰 참여 감사 쿠폰";
 // 문자에서 키링 이름 앞에 공통으로 붙는 할인 문구
 const DISCOUNT_TEXT = "판타스트릭 테마 중 택1 5,000원 할인";
 
+// 문자 말미 안내 — 수령처와 기한 주의. 문구만 고치면 발송 화면에 바로 반영된다.
+export const PICKUP_NOTICE = "키링은 FANTASTRICK TGC점에서 수령 가능합니다.";
+export const EXPIRY_NOTICE = "쿠폰 사용기한은 1달입니다 기한을 꼭 확인해주세요!";
+
 // 쿠폰 사용기한 — 발급일로부터 1개월
 export const VALID_MONTHS = 1;
 
@@ -101,7 +105,7 @@ export function buildMessage(
   expiresAt: Date | string | null | undefined,
 ) {
   const who = name ? `${name}님` : "고객님";
-  const tail = `사용기한 ~ ${fmtKSTDate(expiresAt)}`;
+  const tail = `※ ${PICKUP_NOTICE}\n※ ${EXPIRY_NOTICE} (~ ${fmtKSTDate(expiresAt)})`;
 
   if (items.length === 1) {
     return `${who}, 리뷰 감사합니다!\n${DISCOUNT_TEXT} + 키링(${items[0].keyring}) 쿠폰이 도착했어요.\n\n${items[0].link}\n\n${tail}`;
