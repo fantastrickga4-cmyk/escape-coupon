@@ -50,7 +50,8 @@ export default async function CouponPage({
     <Centered>
       <div className="w-full max-w-sm nb-card overflow-hidden">
         <div className="nb-banner text-center py-6 px-6">
-          <p className="text-sm font-bold">{coupon.campaign.name}</p>
+          {/* 고객에겐 title(브랜드 문구)을 보여준다. 없으면 관리용 이름으로 대체 */}
+          <p className="text-sm font-bold">{coupon.campaign.title ?? coupon.campaign.name}</p>
           <h1 className="text-2xl font-extrabold mt-1">{benefit}</h1>
           {restriction && <p className="text-xs font-bold mt-2">{restriction} 사용 가능</p>}
           {coupon.excludeTheme && (

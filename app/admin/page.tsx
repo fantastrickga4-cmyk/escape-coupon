@@ -108,6 +108,11 @@ export default async function AdminDashboard() {
           )}
         </section>
 
+        {/* 이번 주 정기 발행분 발송 — 번호 입력 없이 바로 보내는 화면 */}
+        <Link href="/admin/weekly" className="nb-btn nb-btn-primary w-full text-center text-lg py-5">
+          📨 이번 주 발송
+        </Link>
+
         {/* 빠른 메뉴 */}
         <section className="grid grid-cols-2 gap-3">
           <Link href="/admin/send" className="nb-btn nb-btn-secondary w-full text-center">

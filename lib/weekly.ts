@@ -1,10 +1,11 @@
 // 매주 정기 발행하는 쿠폰 2종의 설정.
-// 발행은 /api/weekly 라우트가 이 파일만 보고 처리한다(관리자 화면 입력 없음).
+// 발행(/api/weekly)과 발송 화면(/admin/weekly)이 이 파일을 공유한다.
 // 문구·기한·보관기간을 바꾸려면 여기만 고치면 된다.
 
 export type WeeklyPreset = {
-  key: string; // 호출 시 종류를 지정하는 값 (kinds: ["lockdown"])
-  label: string; // 캠페인명·문자에 들어갈 짧은 이름
+  key: string; // 발행 시 종류를 지정하는 값 (kinds: ["lockdown"])
+  label: string; // 관리자 목록·발송 화면에 쓰는 짧은 이름
+  keyring: string; // 문자 문구에 들어가는 키링 이름
   benefit: string; // 고객 쿠폰 화면에 뜨는 혜택 문구
 };
 
@@ -12,17 +13,22 @@ export const WEEKLY_PRESETS: WeeklyPreset[] = [
   {
     key: "lockdown",
     label: "락다운 시티 키링",
+    keyring: "락다운 시티",
     benefit: "판타스트릭 테마 중 택1 5,000원 할인 + 키링(락다운 시티)",
   },
   {
     key: "eternity",
     label: "시간의 영속성 키링",
+    keyring: "시간의 영속성",
     benefit: "판타스트릭 테마 중 택1 5,000원 할인 + 키링(시간의 영속성)",
   },
 ];
 
-// 문자 첫 줄 — 쿠폰 2종의 공통 혜택을 한 번만 알린다(종류별로 반복하지 않기 위해)
-export const WEEKLY_HEADLINE = "[판타스트릭] 이번 주 쿠폰이 도착했어요!\n테마 중 택1 5,000원 할인 + 키링 증정";
+// 고객 쿠폰 화면(/c/[token])에 보이는 제목. 관리용 캠페인명은 주차·종류가 드러나야 해서 따로 둔다.
+export const WEEKLY_TITLE = "FANTASTRICK 리뷰 참여 감사 쿠폰";
+
+// 문자에서 키링 이름 앞에 공통으로 붙는 할인 문구
+const DISCOUNT_TEXT = "판타스트릭 테마 중 택1 5,000원 할인";
 
 // 쿠폰 사용기한 — 발급일로부터 1개월
 export const VALID_MONTHS = 1;
@@ -75,4 +81,39 @@ export function campaignName(preset: WeeklyPreset, week: string) {
 export function fmtKSTDate(d: Date | string | null | undefined) {
   if (!d) return "";
   return new Date(d).toLocaleDateString("ko-KR", { timeZone: "Asia/Seoul" });
+}
+
+export function formatPhone(p: string) {
+  if (p.length === 11) return `${p.slice(0, 3)}-${p.slice(3, 7)}-${p.slice(7)}`;
+  if (p.length === 10) return `${p.slice(0, 3)}-${p.slice(3, 6)}-${p.slice(6)}`;
+  return p;
+}
+
+const MARKS = ["①", "②", "③", "④"];
+
+export type MessageItem = { keyring: string; link: string };
+
+// 받는 사람 한 명에게 나갈 문자 한 통.
+// 여러 장을 받는 사람은 통을 나누지 않고 링크를 번호로 나열한다.
+export function buildMessage(
+  name: string | null | undefined,
+  items: MessageItem[],
+  expiresAt: Date | string | null | undefined,
+) {
+  const who = name ? `${name}님` : "고객님";
+  const tail = `사용기한 ~ ${fmtKSTDate(expiresAt)}`;
+
+  if (items.length === 1) {
+    return `${who}, 리뷰 감사합니다!\n${DISCOUNT_TEXT} + 키링(${items[0].keyring}) 쿠폰이 도착했어요.\n\n${items[0].link}\n\n${tail}`;
+  }
+
+  const list = items
+    .map((it, i) => `${MARKS[i] ?? `${i + 1}.`} 키링(${it.keyring})\n${it.link}`)
+    .join("\n\n");
+  return `${who}, 리뷰 감사합니다!\n${DISCOUNT_TEXT} 쿠폰 ${items.length}장이 도착했어요.\n\n${list}\n\n${tail}`;
+}
+
+// 캠페인명(관리용)에서 키링 종류를 되찾는다. 발송 화면이 쿠폰→키링명을 알아내는 데 쓴다.
+export function presetByCampaignName(name: string) {
+  return WEEKLY_PRESETS.find((p) => name.endsWith(p.label)) ?? null;
 }

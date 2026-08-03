@@ -78,13 +78,24 @@ export default async function CampaignDetail({
           </div>
           <div className="grid grid-cols-4 gap-2 text-center">
             <Funnel label="발급" value={total} />
-            <Funnel label="발송" value={sent} sub="번호 지정" />
+            <Funnel label="번호지정" value={sent} sub="발송 대상" />
             <Funnel label="열람" value={viewed} sub="링크 확인" accent="text-[#4ad7d4]" />
             <Funnel label="사용" value={redeemed} accent="text-[#ff5d8f]" />
           </div>
           <p className="text-xs text-slate-500">
-            ※ ‘열람’은 받는 분이 실제로 쿠폰 링크를 연 횟수 기준입니다(관리자 미리보기는 제외). 무료 문자 방식이라 ‘발송’은 전송 성공이 아니라 번호가 지정된 쿠폰 수예요.
+            ※ ‘번호지정’은 받는 사람이 정해진 쿠폰 수일 뿐, <strong>전송 여부가 아닙니다</strong> — 문자는 사장님 폰에서 직접 보내는 방식이라 실제 전달은 ‘열람’으로 확인하세요. ‘열람’은 받는 분이 쿠폰 링크를 연 횟수 기준입니다(관리자 미리보기는 제외).
           </p>
+        </section>
+
+        {/* 이 화면엔 발송 기능이 없다 — 어디서 보내는지 길을 열어둔다 */}
+        <section className="nb-card-sm p-4 flex flex-wrap items-center gap-2">
+          <span className="text-sm font-bold text-slate-600">문자 보내기 →</span>
+          <Link href="/admin/weekly" className="nb-btn nb-btn-sm nb-btn-primary">
+            📨 이번 주 발송
+          </Link>
+          <Link href="/admin/send" className="nb-btn nb-btn-sm nb-btn-secondary">
+            📩 번호 입력해서 보내기
+          </Link>
         </section>
 
         <section className="nb-card p-6">
