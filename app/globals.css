@@ -17,6 +17,10 @@ body {
   background: var(--nb-cream);
   color: var(--nb-ink);
   font-family: var(--font-geist-sans), "Pretendard", "Malgun Gothic", Arial, sans-serif;
+  /* 한글이 글자 단위로 끊겨 "다." 한 글자만 다음 줄로 넘어가는 것을 막는다(어절 단위 줄바꿈).
+     대신 링크·토큰처럼 띄어쓰기 없는 긴 문자열은 넘치지 않게 끊어준다. */
+  word-break: keep-all;
+  overflow-wrap: break-word;
 }
 
 /* ===== 뉴브루탈리즘 디자인 시스템 (Playful Pop) ===== */

@@ -50,6 +50,7 @@ export function birthdayTitle(month: string) {
 export function birthdayNoticeLines(month: string) {
   return [
     `본 쿠폰은 FANTASTRICK 동의서 작성 시 마케팅 동의를 하신 분들 중 ${monthLabel(month)}월달 생일자 대상으로 발송된 쿠폰입니다.`,
+    "판타스트릭1,2,TGC점에서 원하시는 테마 1개 선택하여 사용 가능합니다.",
     "매장에서 쿠폰을 직원에게 보여주시면 사용 가능합니다.",
     "해당월 마지막 날까지 사용 가능하시니 기한을 꼭 확인해주시기 바랍니다.",
   ];
