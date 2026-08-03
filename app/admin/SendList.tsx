@@ -2,9 +2,9 @@
 
 import { useEffect, useState } from "react";
 import { copyText } from "@/lib/clipboard";
-import { formatPhone } from "@/lib/weekly";
+import { formatPhone } from "@/lib/kst";
 
-export type SendItem = { keyring: string; link: string; code: string | null };
+export type SendItem = { label: string; link: string; code: string | null };
 export type SendRow = {
   phone: string;
   name: string | null;
@@ -14,7 +14,9 @@ export type SendRow = {
   viewed: number;
 };
 
-export default function WeeklySender({ rows }: { rows: SendRow[] }) {
+// 발송 목록 — 번호 입력 없이, 이미 발급된 쿠폰을 사람별로 한 통씩 보낸다.
+// 주간·생일 등 어떤 캠페인이든 같은 화면을 쓴다.
+export default function SendList({ rows }: { rows: SendRow[] }) {
   const [isIOS, setIsIOS] = useState(false);
   const [idx, setIdx] = useState(0); // 일괄발송 진행 위치(다음 보낼 사람)
 
@@ -57,13 +59,7 @@ export default function WeeklySender({ rows }: { rows: SendRow[] }) {
 
       <div className="space-y-3 pt-1">
         {rows.map((r, i) => (
-          <Row
-            key={r.phone}
-            row={r}
-            href={smsHref(r.phone, r.message)}
-            done={i < idx}
-            current={i === idx}
-          />
+          <Row key={r.phone} row={r} href={smsHref(r.phone, r.message)} done={i < idx} current={i === idx} />
         ))}
       </div>
 
@@ -85,9 +81,7 @@ function Row({ row, href, done, current }: { row: SendRow; href: string; done?: 
   }
 
   return (
-    <div
-      className={`nb-card-sm p-3 ${done ? "opacity-50" : ""} ${current ? "border-[#ff5d8f]" : ""}`}
-    >
+    <div className={`nb-card-sm p-3 ${done ? "opacity-50" : ""} ${current ? "border-[#ff5d8f]" : ""}`}>
       <div className="flex items-center gap-2">
         <div className="flex-1 min-w-0">
           <span className="font-extrabold text-black">
@@ -107,9 +101,7 @@ function Row({ row, href, done, current }: { row: SendRow; href: string; done?: 
         )}
       </div>
 
-      <p className="text-xs font-bold text-slate-600 mt-1.5">
-        🔑 {row.items.map((it) => it.keyring).join(" + ")}
-      </p>
+      <p className="text-xs font-bold text-slate-600 mt-1.5">🎟 {row.items.map((it) => it.label).join(" + ")}</p>
 
       <button
         type="button"

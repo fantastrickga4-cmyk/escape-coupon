@@ -3,6 +3,7 @@ import { prisma } from "@/lib/db";
 import { requireAuth } from "@/lib/auth";
 import { STORES } from "@/lib/coupon";
 import { fmtKSTDateTime } from "@/lib/restrict";
+import { birthdayCampaignName, monthKey, monthLabel } from "@/lib/birthday";
 import { adminLogout, cancelRedemption } from "./actions";
 import CampaignForm from "./CampaignForm";
 import AutoRefresh from "./AutoRefresh";
@@ -12,7 +13,8 @@ export const dynamic = "force-dynamic";
 export default async function AdminDashboard() {
   await requireAuth("admin");
 
-  const [total, redeemed, byStore, campaigns, recent] = await Promise.all([
+  const month = monthKey();
+  const [total, redeemed, byStore, campaigns, recent, birthday] = await Promise.all([
     prisma.coupon.count(),
     prisma.coupon.count({ where: { status: "redeemed" } }),
     prisma.coupon.groupBy({
@@ -38,6 +40,11 @@ export default async function AdminDashboard() {
       orderBy: { redeemedAt: "desc" },
       take: 8,
       include: { campaign: { select: { name: true, benefit: true } }, store: true },
+    }),
+    // 이번 달 생일 캠페인이 있으면 발송 화면으로 바로 갈 수 있게 한다
+    prisma.campaign.findFirst({
+      where: { name: birthdayCampaignName(month) },
+      select: { id: true, _count: { select: { coupons: true } } },
     }),
   ]);
 
@@ -108,10 +115,20 @@ export default async function AdminDashboard() {
           )}
         </section>
 
-        {/* 이번 주 정기 발행분 발송 — 번호 입력 없이 바로 보내는 화면 */}
-        <Link href="/admin/weekly" className="nb-btn nb-btn-primary w-full text-center text-lg py-5">
-          📨 이번 주 발송
-        </Link>
+        {/* 정기 발행분 발송 — 번호 입력 없이 바로 보내는 화면 */}
+        <section className={`grid gap-3 ${birthday ? "sm:grid-cols-2" : ""}`}>
+          <Link href="/admin/weekly" className="nb-btn nb-btn-primary w-full text-center text-lg py-5">
+            📨 이번 주 발송
+          </Link>
+          {birthday && (
+            <Link
+              href={`/admin/dispatch/${birthday.id}`}
+              className="nb-btn nb-btn-yellow w-full text-center text-lg py-5"
+            >
+              🎂 {monthLabel(month)}월 생일 발송 ({birthday._count.coupons})
+            </Link>
+          )}
+        </section>
 
         {/* 빠른 메뉴 */}
         <section className="grid grid-cols-2 gap-3">

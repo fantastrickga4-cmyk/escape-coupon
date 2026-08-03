@@ -11,10 +11,11 @@
 // dryRun: true 면 아무것도 만들지 않고 계획만 돌려준다.
 
 import { NextResponse } from "next/server";
-import { timingSafeEqual } from "crypto";
 import { prisma } from "@/lib/db";
-import { newToken, uniqueCode, couponUrl } from "@/lib/coupon";
+import { couponUrl } from "@/lib/coupon";
 import { normalizePhones } from "@/lib/phone";
+import { fmtKSTDate } from "@/lib/kst";
+import { authorizeSecret, collectStale, ensureCoupon, purgeStale } from "@/lib/issue";
 import {
   WEEKLY_PRESETS,
   WEEKLY_TITLE,
@@ -23,23 +24,11 @@ import {
   buildMessage,
   campaignName,
   expiryFrom,
-  fmtKSTDate,
-  retentionCutoff,
   weekKey,
   type WeeklyPreset,
 } from "@/lib/weekly";
 
 const MAX_PEOPLE = 200;
-
-// 시크릿 미설정이면 무조건 거부한다(기본값을 두면 공개 엔드포인트가 되므로).
-function authorized(request: Request) {
-  const secret = process.env.WEEKLY_SECRET;
-  if (!secret) return false;
-  const header = request.headers.get("authorization") ?? "";
-  const given = Buffer.from(header.startsWith("Bearer ") ? header.slice(7) : "");
-  const expected = Buffer.from(secret);
-  return given.length === expected.length && timingSafeEqual(given, expected);
-}
 
 type Target = { phone: string; name: string | null; presets: WeeklyPreset[] };
 
@@ -88,7 +77,7 @@ function readTargets(body: Record<string, unknown>): Target[] {
 }
 
 export async function POST(request: Request) {
-  if (!authorized(request)) {
+  if (!authorizeSecret(request)) {
     return NextResponse.json({ ok: false, message: "인증에 실패했습니다." }, { status: 401 });
   }
 
@@ -114,17 +103,7 @@ export async function POST(request: Request) {
   const now = new Date();
   const week = weekKey(now);
 
-  // 정리 대상 — 만료일이 보관기간을 넘긴 캠페인. 만료일이 없는(무기한) 캠페인은 lt 비교에서 제외된다.
-  const stale = await prisma.campaign.findMany({
-    where: { expiresAt: { lt: retentionCutoff(now) } },
-    select: { id: true, name: true, expiresAt: true, coupons: { select: { status: true } } },
-  });
-  const purgePlan = stale.map((c) => ({
-    name: c.name,
-    total: c.coupons.length,
-    used: c.coupons.filter((x) => x.status === "redeemed").length,
-    expiredAt: fmtKSTDate(c.expiresAt),
-  }));
+  const { stale, plan: purgePlan } = await collectStale(now);
 
   // 이번 주 명단에 실제로 등장한 종류만 캠페인을 만든다
   const used = WEEKLY_PRESETS.filter((p) => targets.some((t) => t.presets.some((x) => x.key === p.key)));
@@ -192,28 +171,14 @@ export async function POST(request: Request) {
     const items = [];
     for (const preset of target.presets) {
       const campaign = campaigns.get(preset.key)!;
-      let coupon = await prisma.coupon.findFirst({
-        where: { campaignId: campaign.id, sentTo: target.phone, status: "issued" },
+      const { coupon, created } = await ensureCoupon({
+        campaignId: campaign.id,
+        phone: target.phone,
+        name: target.name,
+        expiresAt: campaign.expiresAt,
       });
-      if (coupon) {
-        // 재실행으로 이름이 새로 들어오면 채워 넣는다(이름 없이 먼저 발급한 경우 보정)
-        if (target.name && coupon.sentName !== target.name) {
-          coupon = await prisma.coupon.update({ where: { id: coupon.id }, data: { sentName: target.name } });
-        }
-        reused++;
-      } else {
-        coupon = await prisma.coupon.create({
-          data: {
-            id: newToken(),
-            code: await uniqueCode(),
-            campaignId: campaign.id,
-            expiresAt: campaign.expiresAt,
-            sentTo: target.phone,
-            sentName: target.name,
-          },
-        });
-        issued++;
-      }
+      if (created) issued++;
+      else reused++;
       items.push({ kind: preset.key, keyring: preset.keyring, link: couponUrl(coupon.id), code: coupon.code });
     }
     const expiresAt = campaigns.get(target.presets[0].key)!.expiresAt;
@@ -225,17 +190,7 @@ export async function POST(request: Request) {
     });
   }
 
-  // 보관기간 지난 캠페인 삭제 — 쿠폰은 onDelete: Cascade로 함께 지워지고, 요약 한 줄만 남긴다.
-  for (const c of stale) {
-    const plan = purgePlan.find((p) => p.name === c.name)!;
-    await prisma.log.create({
-      data: {
-        type: "purge",
-        detail: `${c.name} 정리 — 발급 ${plan.total} / 사용 ${plan.used} (만료 ${plan.expiredAt})`,
-      },
-    });
-    await prisma.campaign.delete({ where: { id: c.id } });
-  }
+  await purgeStale(stale, purgePlan);
 
   return NextResponse.json({
     ok: true,

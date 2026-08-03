@@ -2,8 +2,9 @@ import Link from "next/link";
 import { prisma } from "@/lib/db";
 import { requireAuth } from "@/lib/auth";
 import { couponUrl } from "@/lib/coupon";
-import { buildMessage, fmtKSTDate, presetByCampaignName, weekKey } from "@/lib/weekly";
-import WeeklySender, { type SendRow } from "./WeeklySender";
+import { fmtKSTDate } from "@/lib/kst";
+import { buildMessage, presetByCampaignName, weekKey } from "@/lib/weekly";
+import SendList, { type SendRow } from "../SendList";
 
 export const dynamic = "force-dynamic";
 
@@ -32,14 +33,18 @@ export default async function WeeklySendPage() {
       ({ phone, name: c.sentName, message: "", items: [], redeemed: 0, viewed: 0 } as SendRow);
 
     row.items.push({
-      keyring: preset?.keyring ?? c.campaign.name,
+      label: preset?.keyring ?? c.campaign.name,
       link: couponUrl(c.id),
       code: c.code,
     });
     if (!row.name && c.sentName) row.name = c.sentName;
     if (c.status === "redeemed") row.redeemed++;
     if (c.viewedAt) row.viewed++;
-    row.message = buildMessage(row.name, row.items, c.expiresAt);
+    row.message = buildMessage(
+      row.name,
+      row.items.map((it) => ({ keyring: it.label, link: it.link })),
+      c.expiresAt,
+    );
     grouped.set(phone, row);
   }
   const rows = [...grouped.values()];
@@ -73,7 +78,7 @@ export default async function WeeklySendPage() {
             </p>
           </div>
         ) : (
-          <WeeklySender rows={rows} />
+          <SendList rows={rows} />
         )}
       </div>
     </main>

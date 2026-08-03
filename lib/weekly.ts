@@ -2,6 +2,11 @@
 // 발행(/api/weekly)과 발송 화면(/admin/weekly)이 이 파일을 공유한다.
 // 문구·기한·보관기간을 바꾸려면 여기만 고치면 된다.
 
+import { fmtKSTDate, kstEndOfDay, toKST } from "@/lib/kst";
+
+// 기존 import 경로를 유지하기 위한 재수출
+export { fmtKSTDate, formatPhone } from "@/lib/kst";
+
 export type WeeklyPreset = {
   key: string; // 발행 시 종류를 지정하는 값 (kinds: ["lockdown"])
   label: string; // 관리자 목록·발송 화면에 쓰는 짧은 이름
@@ -43,18 +48,6 @@ export const VALID_MONTHS = 1;
 // 보관 정책 — 만료일이 이만큼 지난 캠페인은 쿠폰과 함께 삭제한다(요약만 Log에 남김)
 export const RETENTION_WEEKS = 4;
 
-// 서버 타임존과 무관하게 KST 달력값을 읽기 위한 변환.
-// 반환된 Date의 UTC 필드(getUTCFullYear 등)가 곧 KST의 연·월·일이 된다.
-function toKST(d: Date) {
-  return new Date(d.getTime() + 9 * 3600_000);
-}
-
-// KST 기준 y년 m월 day일 23:59:59에 해당하는 실제 시각(UTC 14:59:59).
-// 화면은 toLocaleDateString(ko-KR)로 날짜만 찍으므로 UTC 서버에서도 같은 날짜로 표시된다.
-function kstEndOfDay(y: number, m: number, day: number) {
-  return new Date(Date.UTC(y, m, day, 23 - 9, 59, 59));
-}
-
 // 이번 주 월요일(KST)을 YYYY-MM-DD로. 같은 주에 두 번 실행해도 같은 캠페인을 쓰게 하는 키.
 export function weekKey(now = new Date()) {
   const k = toKST(now);
@@ -83,17 +76,6 @@ export function retentionCutoff(now = new Date()) {
 
 export function campaignName(preset: WeeklyPreset, week: string) {
   return `${week}주 · ${preset.label}`;
-}
-
-export function fmtKSTDate(d: Date | string | null | undefined) {
-  if (!d) return "";
-  return new Date(d).toLocaleDateString("ko-KR", { timeZone: "Asia/Seoul" });
-}
-
-export function formatPhone(p: string) {
-  if (p.length === 11) return `${p.slice(0, 3)}-${p.slice(3, 7)}-${p.slice(7)}`;
-  if (p.length === 10) return `${p.slice(0, 3)}-${p.slice(3, 6)}-${p.slice(6)}`;
-  return p;
 }
 
 const MARKS = ["①", "②", "③", "④"];

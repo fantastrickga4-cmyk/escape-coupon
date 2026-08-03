@@ -90,12 +90,15 @@ export default async function CampaignDetail({
         {/* 이 화면엔 발송 기능이 없다 — 어디서 보내는지 길을 열어둔다 */}
         <section className="nb-card-sm p-4 flex flex-wrap items-center gap-2">
           <span className="text-sm font-bold text-slate-600">문자 보내기 →</span>
-          <Link href="/admin/weekly" className="nb-btn nb-btn-sm nb-btn-primary">
-            📨 이번 주 발송
-          </Link>
-          <Link href="/admin/send" className="nb-btn nb-btn-sm nb-btn-secondary">
-            📩 번호 입력해서 보내기
-          </Link>
+          {sent > 0 ? (
+            <Link href={`/admin/dispatch/${campaign.id}`} className="nb-btn nb-btn-sm nb-btn-primary">
+              📨 이 캠페인 발송 ({sent}장)
+            </Link>
+          ) : (
+            <Link href="/admin/send" className="nb-btn nb-btn-sm nb-btn-secondary">
+              📩 번호 입력해서 보내기
+            </Link>
+          )}
         </section>
 
         <section className="nb-card p-6">
