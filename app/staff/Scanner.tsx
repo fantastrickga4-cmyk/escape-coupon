@@ -13,6 +13,7 @@ type Result = {
   minPeople?: number;
   excludeTheme?: string;
   themes?: string[];
+  needLogin?: boolean;
 };
 
 export default function Scanner() {
@@ -37,7 +38,15 @@ export default function Scanner() {
         body: JSON.stringify({ token, ...opts }),
       });
       const data: Result = await res.json();
-      if (data.need) {
+      if (res.status === 401) {
+        // 세션이 풀린 것 — 쿠폰 문제가 아니니 호점 재선택 길을 열어준다
+        setPending(null);
+        setResult({
+          ok: false,
+          needLogin: true,
+          message: "로그인이 풀렸습니다. 호점을 다시 선택해 주세요.",
+        });
+      } else if (data.need) {
         // 인원/테마 입력 필요
         setPending({ ...data, token });
         setPeople(data.minPeople ?? 1);
@@ -190,9 +199,15 @@ export default function Scanner() {
           </div>
           <div className="mt-1 font-extrabold text-[#111]">{result.message}</div>
           {result.benefit && <div className="mt-1 font-bold text-[#111]">{result.benefit}</div>}
-          <button onClick={scanNext} className="nb-btn nb-btn-dark w-full mt-4">
-            다음 쿠폰 스캔
-          </button>
+          {result.needLogin ? (
+            <a href="/staff/login" className="nb-btn nb-btn-dark w-full mt-4 text-center">
+              호점 다시 선택하기
+            </a>
+          ) : (
+            <button onClick={scanNext} className="nb-btn nb-btn-dark w-full mt-4">
+              다음 쿠폰 스캔
+            </button>
+          )}
         </div>
       )}
 

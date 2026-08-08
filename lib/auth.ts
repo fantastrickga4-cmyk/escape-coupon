@@ -9,6 +9,10 @@ function adminToken(password: string) {
 
 const ADMIN_PW = process.env.ADMIN_PASSWORD ?? "admin1234";
 
+// 직원 세션은 사실상 만료되지 않게 둔다 — 비밀번호 없이 호점만 고르는 입장이라
+// 만료돼봐야 얻는 게 없고, 손님 앞에서 스캔이 막히는 손해만 크다.
+const STAFF_MAX_AGE = 60 * 60 * 24 * 365; // 1년
+
 export function checkPassword(role: "admin", password: string) {
   return role === "admin" && password === ADMIN_PW;
 }
@@ -28,9 +32,22 @@ export async function setSession(role: "admin" | "staff", password?: string, sto
       httpOnly: true,
       sameSite: "lax",
       path: "/",
-      maxAge: 60 * 60 * 12,
+      maxAge: STAFF_MAX_AGE,
     });
   }
+}
+
+// 사용처리 때마다 직원 쿠키 수명을 연장한다(라우트 핸들러에서만 호출 가능).
+export async function touchStaffSession() {
+  const c = await cookies();
+  const id = c.get("staff_store")?.value;
+  if (!id) return;
+  c.set("staff_store", id, {
+    httpOnly: true,
+    sameSite: "lax",
+    path: "/",
+    maxAge: STAFF_MAX_AGE,
+  });
 }
 
 export async function clearSession(role: "admin" | "staff") {

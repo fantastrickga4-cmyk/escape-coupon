@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
-import { isAuthed, getStaffStore } from "@/lib/auth";
+import { isAuthed, getStaffStore, touchStaffSession } from "@/lib/auth";
 import { extractToken } from "@/lib/coupon";
 import { checkTimeRule } from "@/lib/restrict";
 
@@ -12,6 +12,7 @@ export async function POST(request: Request) {
   if (!storeId) {
     return NextResponse.json({ ok: false, message: "호점 정보가 없습니다." }, { status: 400 });
   }
+  await touchStaffSession();
 
   const body = await request.json().catch(() => ({}));
   const raw = String(body.token ?? "");
